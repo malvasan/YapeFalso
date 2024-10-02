@@ -1,7 +1,7 @@
-name: app
-description: "A new Flutter project."
+name: yapefalso
+description: "A project to replicate yape for practice purporse."
 publish_to: 'none'
-version: 1.0.0
+version: 1.1.0
 
 environment:
   sdk: ^3.5.0
@@ -9,11 +9,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  gap: ^3.0.1
+  flutter_riverpod: 
+  riverpod_annotation: 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  riverpod_generator: 
+  riverpod_lint:
+  custom_lint:  
+  build_runner:
 
 flutter:
   uses-material-design: true
