@@ -53,6 +53,8 @@ class PasswordField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final password = ref.watch(passwordProvider);
+
+    //TODO add authentication with database
     if (password.length == 6) {
       log('call authentication');
     }
@@ -94,6 +96,7 @@ class HiddenPassword extends ConsumerWidget {
   }
 }
 
+//TODO: can be sorted like the real app
 class NumericPad extends ConsumerWidget {
   const NumericPad({
     super.key,
@@ -104,6 +107,8 @@ class NumericPad extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
+        //TODO: refactor to be able to create the widgets without hardcode numberss
+        //TODO: can be a grid
         const RowNumber(
           numbers: [1, 2, 3],
         ),

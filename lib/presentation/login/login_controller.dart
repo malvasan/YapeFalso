@@ -11,6 +11,7 @@ class Password extends _$Password {
 
   void increment(int value) {
     state = [...state, value];
+    //TODO: authentication
   }
 
   void decrease() {
