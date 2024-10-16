@@ -1,9 +1,13 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yapefalso/presentation/login/login_page.dart';
-import 'package:yapefalso/presentation/payments/payments_page.dart';
+import 'package:yapefalso/presentation/payments_history/all_payment_history.dart';
+import 'package:yapefalso/presentation/payments_history/payments_history_page.dart';
+import 'package:yapefalso/presentation/qr/qr_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const ProviderScope(child: MainApp()));
 }
 
@@ -13,7 +17,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: const PaymentsPage(),
+        home: const AllPaymentHistoryPage(),
         theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(

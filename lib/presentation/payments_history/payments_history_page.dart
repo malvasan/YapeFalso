@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/rendering/sliver_persistent_header.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
@@ -228,11 +227,11 @@ class _BalanceState extends State<Balance> {
   bool showBalance = false;
   @override
   Widget build(BuildContext context) {
-    final balance = 0;
+    //final balance = 0;
 
     return Card(
       color: Theme.of(context).scaffoldBackgroundColor,
-      elevation: 5,
+      elevation: 7,
       child: ListTile(
         iconColor: Theme.of(context).primaryColor,
         textColor: Theme.of(context).primaryColor,
