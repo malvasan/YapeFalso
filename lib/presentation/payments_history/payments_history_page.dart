@@ -29,7 +29,7 @@ class PaymentsPage extends StatelessWidget {
         slivers: [
           const SliverPersistentHeader(
               pinned: true,
-              delegate: CustomSliverGrid(minExtent: 200, maxExtent: 200)),
+              delegate: CustomSliverGrid(minExtent: 210, maxExtent: 210)),
           SliverToBoxAdapter(
             child: Column(
               children: [
