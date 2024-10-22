@@ -145,13 +145,13 @@ class _CameraPageState extends State<CameraPage> {
     //vission detector view
     //barcode scanner, camera view
     for (Barcode barcode in barcodes) {
-      if (barcode.format != BarcodeFormat.qrCode) break;
+      if (barcode.format != BarcodeFormat.qrCode) continue;
       final BarcodeType type = barcode.type;
       final Rect boundingBox = barcode.boundingBox;
       final String? displayValue = barcode.displayValue;
       final String? rawValue = barcode.rawValue;
       final validFormat = RegExp(r'^(YP-)\d{9}');
-      if (!validFormat.hasMatch(displayValue ?? '')) break;
+      if (!validFormat.hasMatch(rawValue ?? '')) break;
       log('inputImage');
       log(inputImage.bytes.toString());
       log('format');

@@ -188,7 +188,9 @@ class PaymentListFooter extends StatelessWidget {
               icon: const Icon(Icons.qr_code),
               label: const Text('Escanear QR'),
               style: OutlinedButton.styleFrom(
-                shape: const RoundedRectangleBorder(),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                ),
                 foregroundColor: const Color.fromARGB(255, 16, 203, 180),
                 side: const BorderSide(
                   color: Color.fromARGB(255, 16, 203, 180),
@@ -203,7 +205,9 @@ class PaymentListFooter extends StatelessWidget {
               icon: const Icon(Icons.send),
               label: const Text('Yapear'),
               style: FilledButton.styleFrom(
-                  shape: const RoundedRectangleBorder(),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                  ),
                   backgroundColor: const Color.fromARGB(255, 16, 203, 180),
                   foregroundColor: Theme.of(context).scaffoldBackgroundColor),
             ),

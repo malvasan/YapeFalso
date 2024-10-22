@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yapefalso/presentation/contact_search/contact_search_page.dart';
+import 'package:yapefalso/presentation/payment.dart/payment.dart';
 import 'package:yapefalso/presentation/payments_history/all_payment_history.dart';
 import 'package:yapefalso/presentation/payments_history/payments_history_page.dart';
 import 'package:yapefalso/presentation/qr/qr_page.dart';
@@ -18,7 +19,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: const ContactSearchPage(),
+        home: const PaymentPage(),
         theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
