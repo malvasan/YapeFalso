@@ -39,7 +39,7 @@ class _PaymentPageState extends State<PaymentPage> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.cancel_outlined),
+            icon: const Icon(Icons.close),
           ),
         ],
       ),
