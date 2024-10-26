@@ -1,12 +1,19 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yapefalso/first_page.dart';
 import 'package:yapefalso/presentation/confirmation/confirmation.dart';
 import 'package:yapefalso/presentation/contact_search/contact_search_page.dart';
+import 'package:yapefalso/presentation/log_out/log_out_page.dart';
+import 'package:yapefalso/presentation/login/login_email_page.dart';
 import 'package:yapefalso/presentation/payment.dart/payment.dart';
 import 'package:yapefalso/presentation/payments_history/all_payment_history.dart';
 import 'package:yapefalso/presentation/payments_history/payments_history_page.dart';
 import 'package:yapefalso/presentation/qr/qr_page.dart';
+import 'package:yapefalso/presentation/registration/password_registration.dart';
+import 'package:yapefalso/presentation/registration/personal_information_registration.dart';
+import 'package:yapefalso/presentation/registration/phone_registration.dart';
+import 'package:yapefalso/presentation/registration/registration_confirmation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +27,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: const ConfirmationPage(),
+        home: const LogOutPage(),
         theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(

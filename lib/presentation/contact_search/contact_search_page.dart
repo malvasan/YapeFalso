@@ -12,8 +12,12 @@ class ContactSearchPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          leading:
-              IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_back)),
+          leading: IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.arrow_back,
+            ),
+          ),
           title: const Text('Yapear'),
           bottom: const TabBar(tabs: [
             Tab(

@@ -28,8 +28,9 @@ class PaymentsPage extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           const SliverPersistentHeader(
-              pinned: true,
-              delegate: CustomSliverGrid(minExtent: 210, maxExtent: 210)),
+            pinned: true,
+            delegate: CustomSliverGrid(minExtent: 210, maxExtent: 210),
+          ),
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -205,11 +206,12 @@ class PaymentListFooter extends StatelessWidget {
               icon: const Icon(Icons.send),
               label: const Text('Yapear'),
               style: FilledButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
-                  ),
-                  backgroundColor: const Color.fromARGB(255, 16, 203, 180),
-                  foregroundColor: Theme.of(context).scaffoldBackgroundColor),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                ),
+                backgroundColor: const Color.fromARGB(255, 16, 203, 180),
+                foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+              ),
             ),
           )
         ],

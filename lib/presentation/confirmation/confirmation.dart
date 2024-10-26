@@ -46,12 +46,14 @@ class ConfirmationPage extends StatelessWidget {
                       flex: 5,
                       child: Column(
                         children: [
-                          Text('S/',
-                              style: TextStyle(
-                                color: Theme.of(context).disabledColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 25,
-                              )),
+                          Text(
+                            'S/',
+                            style: TextStyle(
+                              color: Theme.of(context).disabledColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 25,
+                            ),
+                          ),
                           const Gap(20),
                         ],
                       ),
@@ -77,19 +79,26 @@ class ConfirmationPage extends StatelessWidget {
                 ),
                 Text(
                   'date',
-                  style: TextStyle(color: Theme.of(context).disabledColor),
+                  style: TextStyle(
+                    color: Theme.of(context).disabledColor,
+                  ),
                 ),
                 const Gap(20),
                 const Divider(),
                 const Gap(5),
                 RichText(
                   text: TextSpan(
-                      style: TextStyle(color: Theme.of(context).disabledColor),
+                      style: TextStyle(
+                        color: Theme.of(context).disabledColor,
+                      ),
                       children: const [
-                        TextSpan(text: 'N de celular: '),
                         TextSpan(
-                            text: '*** *** 717',
-                            style: TextStyle(color: Colors.black))
+                          text: 'N de celular: ',
+                        ),
+                        TextSpan(
+                          text: '*** *** 717',
+                          style: TextStyle(color: Colors.black),
+                        )
                       ]),
                 ),
                 const Gap(5),
@@ -97,11 +106,17 @@ class ConfirmationPage extends StatelessWidget {
                 const Gap(5),
                 RichText(
                   text: TextSpan(
-                      style: TextStyle(color: Theme.of(context).disabledColor),
+                      style: TextStyle(
+                        color: Theme.of(context).disabledColor,
+                      ),
                       children: const [
-                        TextSpan(text: 'Destino: '),
                         TextSpan(
-                            text: 'Yape', style: TextStyle(color: Colors.black))
+                          text: 'Destino: ',
+                        ),
+                        TextSpan(
+                          text: 'Yape',
+                          style: TextStyle(color: Colors.black),
+                        )
                       ]),
                 ),
                 const Gap(5),
@@ -109,12 +124,17 @@ class ConfirmationPage extends StatelessWidget {
                 const Gap(5),
                 RichText(
                   text: TextSpan(
-                      style: TextStyle(color: Theme.of(context).disabledColor),
+                      style: TextStyle(
+                        color: Theme.of(context).disabledColor,
+                      ),
                       children: const [
-                        TextSpan(text: 'N de operación: '),
                         TextSpan(
-                            text: '1231241',
-                            style: TextStyle(color: Colors.black))
+                          text: 'N de operación: ',
+                        ),
+                        TextSpan(
+                          text: '1231241',
+                          style: TextStyle(color: Colors.black),
+                        )
                       ]),
                 ),
                 const Gap(5),
@@ -131,14 +151,16 @@ class ConfirmationPage extends StatelessWidget {
                 children: [
                   IconButton.filled(
                     onPressed: () {},
-                    icon: const Icon(Icons.share_sharp),
+                    icon: const Icon(
+                      Icons.share_sharp,
+                    ),
                     style: FilledButton.styleFrom(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                       ),
                       foregroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
-                      backgroundColor: Color.fromARGB(255, 122, 12, 147),
+                      backgroundColor: const Color.fromARGB(255, 122, 12, 147),
                       side: const BorderSide(
                         color: Color.fromARGB(255, 122, 12, 147),
                       ),
@@ -147,8 +169,9 @@ class ConfirmationPage extends StatelessWidget {
                   Text(
                     'Compartir',
                     style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        fontSize: 10),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      fontSize: 10,
+                    ),
                   ),
                 ],
               ),
@@ -157,7 +180,9 @@ class ConfirmationPage extends StatelessWidget {
                 children: [
                   IconButton.filled(
                     onPressed: () {},
-                    icon: const Icon(Icons.send),
+                    icon: const Icon(
+                      Icons.send,
+                    ),
                     style: FilledButton.styleFrom(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
@@ -173,8 +198,9 @@ class ConfirmationPage extends StatelessWidget {
                   Text(
                     'Nuevo Yapeo',
                     style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        fontSize: 10),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      fontSize: 10,
+                    ),
                   ),
                 ],
               ),

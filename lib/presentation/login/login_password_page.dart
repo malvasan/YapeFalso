@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:yapefalso/presentation/login/login_controller.dart';
+import 'package:yapefalso/presentation/login/login_password_controller.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPasswordPage extends StatelessWidget {
+  const LoginPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +88,21 @@ class HiddenPassword extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (var value = 0; value < length; value++)
-          const Icon(Icons.circle_rounded),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+            child: Icon(
+              Icons.circle_rounded,
+              color: Color.fromARGB(255, 16, 203, 180),
+            ),
+          ),
         for (var value = 0; value < 6 - length; value++)
-          const Icon(Icons.circle_outlined),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+            child: Icon(
+              Icons.circle_outlined,
+              color: Color.fromARGB(255, 16, 203, 180),
+            ),
+          ),
       ],
     );
   }

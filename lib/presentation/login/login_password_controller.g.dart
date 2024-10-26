@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_controller.dart';
+part of 'login_password_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$passwordHash() => r'be99b7abc95b4cb208b1299956e44028e18c948f';
+String _$passwordHash() => r'51dffff8934899e83715d7a2e295b159e3945cc2';
 
 /// See also [Password].
 @ProviderFor(Password)

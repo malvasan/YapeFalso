@@ -1,17 +1,25 @@
+import 'dart:developer';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'login_controller.g.dart';
+part 'password_registration_controller.g.dart';
 
 @riverpod
-class Password extends _$Password {
+class PasswordCreation extends _$PasswordCreation {
   @override
   List<int> build() {
     return [];
   }
 
   void increment(int value) {
+    if (length >= 6) {
+      return;
+    }
     state = [...state, value];
-    //TODO: authentication
+    if (length == 6) {
+      log('call authentication');
+      //TODO: authentication
+    }
   }
 
   void decrease() {
