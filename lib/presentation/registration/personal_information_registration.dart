@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
 enum _DocumentType { DNI }
 
+@RoutePage()
 class PersonalInformationRegistrationPage extends StatefulWidget {
   const PersonalInformationRegistrationPage({super.key});
 
@@ -16,6 +19,7 @@ class _PersonalInformationRegistrationPageState
   late TextEditingController emailController;
   late TextEditingController documentID;
   String dropdownValue = _DocumentType.DNI.name;
+  var _buttonEnabled = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -43,6 +47,13 @@ class _PersonalInformationRegistrationPageState
         title: Text(
           'Crear cuenta',
           style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
+        ),
+        leading: IconButton(
+          onPressed: () => context.router.back(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
         ),
       ),
       body: Form(
@@ -112,6 +123,15 @@ class _PersonalInformationRegistrationPageState
                   }
                   return null;
                 },
+                onChanged: (value) {
+                  if (_formKey.currentState!.validate()) {
+                    _buttonEnabled = true;
+                    setState(() {});
+                  } else {
+                    _buttonEnabled = false;
+                    setState(() {});
+                  }
+                },
               ),
             ),
             const Gap(35),
@@ -129,6 +149,15 @@ class _PersonalInformationRegistrationPageState
                   }
                   return null;
                 },
+                onChanged: (value) {
+                  if (_formKey.currentState!.validate()) {
+                    _buttonEnabled = true;
+                    setState(() {});
+                  } else {
+                    _buttonEnabled = false;
+                    setState(() {});
+                  }
+                },
               ),
             ),
           ],
@@ -137,15 +166,16 @@ class _PersonalInformationRegistrationPageState
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12.0),
         child: FilledButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Processing Data'),
-                ),
-              );
-            }
-          },
+          onPressed: _buttonEnabled
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Processing Data'),
+                    ),
+                  );
+                  context.router.push(const PasswordRegistrationRoute());
+                }
+              : null,
           style: FilledButton.styleFrom(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(

@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class PaymentsPage extends StatelessWidget {
   const PaymentsPage({super.key});
 
@@ -12,7 +15,12 @@ class PaymentsPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+        leading: IconButton(
+          onPressed: () => context.router.push(const LogOutRoute()),
+          icon: const Icon(
+            Icons.menu,
+          ),
+        ),
         //TODO: obtain user name from database
         title: const Text('User name'),
         actions: [
@@ -141,6 +149,7 @@ class PaymentListHeader extends StatelessWidget {
                     ),
                   )),
                   IconButton(
+                    //TODO: Add refresh option de firebase
                     onPressed: () {},
                     icon: const Icon(Icons.refresh),
                     color: const Color.fromARGB(255, 16, 203, 180),
@@ -150,7 +159,8 @@ class PaymentListHeader extends StatelessWidget {
                     indent: 10,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () =>
+                        context.router.push(const AllPaymentHistoryRoute()),
                     style: TextButton.styleFrom(
                         foregroundColor:
                             const Color.fromARGB(255, 16, 203, 180)),
@@ -185,12 +195,16 @@ class PaymentListFooter extends StatelessWidget {
         children: [
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.qr_code),
+              onPressed: () => context.router.push(const CameraRoute()),
+              icon: const Icon(
+                Icons.qr_code,
+              ),
               label: const Text('Escanear QR'),
               style: OutlinedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                  borderRadius: BorderRadius.all(
+                    Radius.elliptical(5, 5),
+                  ),
                 ),
                 foregroundColor: const Color.fromARGB(255, 16, 203, 180),
                 side: const BorderSide(
@@ -202,12 +216,16 @@ class PaymentListFooter extends StatelessWidget {
           const Gap(10),
           Expanded(
             child: FilledButton.tonalIcon(
-              onPressed: () {},
-              icon: const Icon(Icons.send),
+              onPressed: () => context.router.push(const ContactSearchRoute()),
+              icon: const Icon(
+                Icons.send,
+              ),
               label: const Text('Yapear'),
               style: FilledButton.styleFrom(
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                  borderRadius: BorderRadius.all(
+                    Radius.elliptical(5, 5),
+                  ),
                 ),
                 backgroundColor: const Color.fromARGB(255, 16, 203, 180),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -281,14 +299,17 @@ class PaymentHistoryCard extends StatelessWidget {
   //TODO: use the data retrieved and use it
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         ListTile(
-          title: Text('Full name'),
-          subtitle: Text('Full date'),
-          trailing: Text('Payment'),
+          title: const Text('Full name'),
+          subtitle: const Text('Full date'),
+          trailing: const Text('Payment'),
+          onTap: () => context.router.push(
+            ConfirmationRoute(yapeo: false),
+          ),
         ),
-        Divider(
+        const Divider(
           indent: 10,
           endIndent: 10,
         ),

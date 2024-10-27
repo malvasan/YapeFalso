@@ -1,10 +1,13 @@
 import 'dart:developer';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/presentation/login/login_password_controller.dart';
 
+@RoutePage()
 class LoginPasswordPage extends StatelessWidget {
   const LoginPasswordPage({super.key});
 
@@ -31,7 +34,16 @@ class PasswordSection extends StatelessWidget {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
-        color: Theme.of(context).scaffoldBackgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+        ),
         child: const Column(
           children: [
             PasswordField(),
@@ -52,11 +64,23 @@ class PasswordField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: agregar el provider de google para que sea llamado al tener 6 caracteres
+    // ref.listen(
+    //   registrationControllerProvider,
+    //   (_, state) => state.whenOrNull(
+    //     error: (error, stackTrace) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         SnackBar(content: Text(error.toString())),
+    //       );
+    //     },
+    //   ),
+    // );
     final password = ref.watch(passwordProvider);
 
     //TODO add authentication with database
     if (password.length == 6) {
       log('call authentication');
+      context.router.push(const PaymentsRoute());
     }
     if (password.isEmpty) {
       return Expanded(
@@ -203,6 +227,14 @@ class NumberButton extends ConsumerWidget {
           onPressed: () {
             ref.read(passwordProvider.notifier).increment(value);
           },
+          style: ElevatedButton.styleFrom(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.elliptical(5, 5),
+              ),
+            ),
+            backgroundColor: const Color.fromARGB(144, 196, 21, 235),
+          ),
           child: Text('$value'),
         ),
       ),

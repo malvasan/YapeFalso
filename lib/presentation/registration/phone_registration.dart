@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class PhoneRegistrationPage extends StatefulWidget {
   const PhoneRegistrationPage({super.key});
 
@@ -10,6 +13,7 @@ class PhoneRegistrationPage extends StatefulWidget {
 
 class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
   late TextEditingController phone;
+  var _buttonEnabled = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -32,7 +36,7 @@ class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () => context.router.back(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -82,12 +86,22 @@ class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
                 ),
                 maxLength: 9,
                 controller: phone,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 keyboardType: const TextInputType.numberWithOptions(),
                 validator: (value) {
                   if (value == null || value.isEmpty || value.length < 9) {
                     return 'Ingrese correctamente su número de celular';
                   }
                   return null;
+                },
+                onChanged: (value) {
+                  if (_formKey.currentState!.validate()) {
+                    _buttonEnabled = true;
+                    setState(() {});
+                  } else {
+                    _buttonEnabled = false;
+                    setState(() {});
+                  }
                 },
               ),
             ),
@@ -104,15 +118,17 @@ class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12.0),
         child: FilledButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Processing Data'),
-                ),
-              );
-            }
-          },
+          onPressed: _buttonEnabled
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Processing Data'),
+                    ),
+                  );
+                  context.router
+                      .push(const PersonalInformationRegistrationRoute());
+                }
+              : null,
           style: FilledButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(

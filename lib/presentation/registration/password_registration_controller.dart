@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'password_registration_controller.g.dart';
@@ -18,7 +19,6 @@ class PasswordCreation extends _$PasswordCreation {
     state = [...state, value];
     if (length == 6) {
       log('call authentication');
-      //TODO: authentication
     }
   }
 

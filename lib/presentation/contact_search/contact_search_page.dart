@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class ContactSearchPage extends StatelessWidget {
   const ContactSearchPage({super.key});
 
@@ -10,10 +13,11 @@ class ContactSearchPage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           centerTitle: true,
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () => context.router.back(),
             icon: const Icon(
               Icons.arrow_back,
             ),
@@ -66,6 +70,7 @@ class _ContactsListState extends State<ContactsList> {
               elevation: 6,
               color: Theme.of(context).scaffoldBackgroundColor,
               child: TextField(
+                //TODO: Filter option
                 decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     hintText: 'Ingresa el celular o busca contacto',
@@ -97,7 +102,7 @@ class ContactCard extends StatelessWidget {
         ListTile(
           title: const Text('Full name'),
           subtitle: const Text('Full date'),
-          onTap: () {},
+          onTap: () => context.router.push(const PaymentRoute()),
         ),
         const Divider(
           indent: 10,

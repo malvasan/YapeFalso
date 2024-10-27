@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
 
@@ -30,16 +33,24 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
-        leading:
-            IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_back)),
+        leading: IconButton(
+          onPressed: () => context.router.back(),
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+        ),
         //TODO: obtain user name from database
         title: const Text('Yapear a'),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.close),
+            onPressed: () =>
+                context.router.popUntilRouteWithName('PaymentsRoute'),
+            icon: const Icon(
+              Icons.close,
+            ),
           ),
         ],
       ),
@@ -147,7 +158,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: null,
                           label: const Text(
                             'Otros bancos',
                           ),
@@ -167,7 +178,8 @@ class _PaymentPageState extends State<PaymentPage> {
                       const Gap(10),
                       Expanded(
                         child: FilledButton.tonalIcon(
-                          onPressed: () {},
+                          onPressed: () => context.router
+                              .push(ConfirmationRoute(yapeo: true)),
                           label: const Text('Yapear'),
                           style: FilledButton.styleFrom(
                               shape: const RoundedRectangleBorder(

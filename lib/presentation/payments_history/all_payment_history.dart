@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class AllPaymentHistoryPage extends StatelessWidget {
   const AllPaymentHistoryPage({super.key});
 
@@ -11,16 +14,27 @@ class AllPaymentHistoryPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-        leading:
-            IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_back)),
-        //TODO: obtain user name from database
+        leading: IconButton(
+          onPressed: () => context.router.back(),
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+        ),
         title: const Text('Movimientos'),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.email_outlined),
+            icon: const Icon(
+              Icons.email_outlined,
+            ),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.tune))
+          IconButton(
+            //TODO: add filter options
+            onPressed: () {},
+            icon: const Icon(
+              Icons.tune,
+            ),
+          )
         ],
       ),
       body: CustomScrollView(
@@ -141,14 +155,17 @@ class PaymentHistoryCard extends StatelessWidget {
   //TODO: use the data retrieved and use it
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         ListTile(
-          title: Text('Full name'),
-          subtitle: Text('Full date'),
-          trailing: Text('Payment'),
+          title: const Text('Full name'),
+          subtitle: const Text('Full date'),
+          trailing: const Text('Payment'),
+          onTap: () => context.router.push(
+            ConfirmationRoute(yapeo: false),
+          ),
         ),
-        Divider(
+        const Divider(
           indent: 10,
           endIndent: 10,
         ),

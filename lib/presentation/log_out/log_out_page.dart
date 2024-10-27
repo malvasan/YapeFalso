@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class LogOutPage extends StatelessWidget {
   const LogOutPage({super.key});
 
@@ -11,7 +14,7 @@ class LogOutPage extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () => context.router.back(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -392,7 +395,11 @@ class LogOutPage extends StatelessWidget {
                   title: const Text(
                     'Cerrar sesión',
                   ),
-                  onTap: () {},
+                  onTap: () => context.router.replaceAll(
+                    [
+                      const FirstRoute(),
+                    ],
+                  ),
                 ),
               ],
             ),

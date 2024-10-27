@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class LoginEmailPage extends StatefulWidget {
   const LoginEmailPage({super.key});
 
@@ -36,7 +39,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () => context.router.back(),
             icon: Icon(
               Icons.arrow_back,
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -118,11 +121,11 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                         return null;
                       },
                       onChanged: (value) {
-                        if (value.isEmpty || !value.contains('@')) {
-                          _buttonEnabled = false;
+                        if (_formKey.currentState!.validate()) {
+                          _buttonEnabled = true;
                           setState(() {});
                         } else {
-                          _buttonEnabled = true;
+                          _buttonEnabled = false;
                           setState(() {});
                         }
                       },
@@ -137,6 +140,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                                 content: Text('Processing Data'),
                               ),
                             );
+                            context.router.push(const LoginPasswordRoute());
                           }
                         : null,
                     label: Text('Continuar'.toUpperCase()),

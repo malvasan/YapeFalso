@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});
 
@@ -40,7 +43,8 @@ class FirstPage extends StatelessWidget {
             ),
             Expanded(child: Container()),
             FilledButton.tonalIcon(
-              onPressed: () {},
+              onPressed: () =>
+                  context.router.push(const PhoneRegistrationRoute()),
               label: Text('Crear Cuenta'.toUpperCase()),
               style: FilledButton.styleFrom(
                 shape: const RoundedRectangleBorder(
@@ -53,7 +57,7 @@ class FirstPage extends StatelessWidget {
             ),
             const Gap(20),
             OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: () => context.router.push(const LoginEmailRoute()),
               label: Text('Ya tengo una cuenta'.toUpperCase()),
               style: OutlinedButton.styleFrom(
                 shape: const RoundedRectangleBorder(

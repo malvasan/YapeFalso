@@ -1,10 +1,13 @@
 import 'dart:developer';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/presentation/registration/password_registration_controller.dart';
 
+@RoutePage()
 class PasswordRegistrationPage extends StatelessWidget {
   const PasswordRegistrationPage({super.key});
 
@@ -77,7 +80,22 @@ class PasswordField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: agregar el provider de google para que sea llamado al tener 6 caracteres
+    // ref.listen(
+    //   registrationControllerProvider,
+    //   (_, state) => state.whenOrNull(
+    //     error: (error, stackTrace) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         SnackBar(content: Text(error.toString())),
+    //       );
+    //     },
+    //   ),
+    // );
     final password = ref.watch(passwordCreationProvider);
+
+    if (password.length == 6) {
+      context.router.push(const RegistrationConfirmationRoute());
+    }
 
     if (password.isEmpty) {
       return Expanded(
@@ -157,7 +175,7 @@ class NumericPad extends ConsumerWidget {
             children: [
               Expanded(
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: null,
                   icon: Icon(
                     Icons.fingerprint,
                     color: Theme.of(context).primaryColor,

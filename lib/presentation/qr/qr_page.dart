@@ -1,11 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
 
@@ -151,7 +154,11 @@ class _CameraPageState extends State<CameraPage> {
       final String? displayValue = barcode.displayValue;
       final String? rawValue = barcode.rawValue;
       final validFormat = RegExp(r'^(YP-)\d{9}');
-      if (!validFormat.hasMatch(rawValue ?? '')) break;
+      if (!validFormat.hasMatch(rawValue ?? ''))
+        break;
+      else {
+        changePage();
+      }
       log('inputImage');
       log(inputImage.bytes.toString());
       log('format');
@@ -177,6 +184,10 @@ class _CameraPageState extends State<CameraPage> {
       // }
     }
     _isBusy = false;
+  }
+
+  void changePage() {
+    context.router.push(const PaymentRoute());
   }
 
   InputImage? _inputImageFromCameraImage(CameraImage image) {

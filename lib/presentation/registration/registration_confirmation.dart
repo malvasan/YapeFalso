@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+@RoutePage()
 class RegistrationConfirmationPage extends StatelessWidget {
   const RegistrationConfirmationPage({super.key});
 
@@ -36,7 +39,7 @@ class RegistrationConfirmationPage extends StatelessWidget {
             ),
             Expanded(child: Container()),
             FilledButton(
-              onPressed: () {},
+              onPressed: () => context.router.push(const PaymentsRoute()),
               style: FilledButton.styleFrom(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
