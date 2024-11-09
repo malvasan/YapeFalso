@@ -1,12 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
-import 'package:yapefalso/first_page.dart';
 
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
   @override
   RouteType get defaultRouteType =>
-      RouteType.material(); //.cupertino, .adaptive ..etc
+      const RouteType.material(); //.cupertino, .adaptive ..etc
 
   @override
   List<AutoRoute> get routes => [
@@ -30,9 +29,11 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: CameraRoute.page), //Qr scanner page
         AutoRoute(page: ContactSearchRoute.page), //contact search
         AutoRoute(page: PaymentRoute.page), //payment preparation page
+        AutoRoute(page: ConfirmationRoute.page),
+        AutoRoute(page: AccountTypeSelectionRoute.page),
         AutoRoute(
-            page: ConfirmationRoute
-                .page) //confirmation after payment or on click in payments history
+            page: DebitCardRegistrtation
+                .page), //confirmation after payment or on click in payments history
       ];
 
   @override

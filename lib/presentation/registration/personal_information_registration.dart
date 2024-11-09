@@ -94,6 +94,7 @@ class _PersonalInformationRegistrationPageState
                   labelText: 'Tipo de documento',
                 ),
                 value: dropdownValue,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 items: _DocumentType.values.map(
                   (e) {
                     return DropdownMenuItem(value: e.name, child: Text(e.name));
@@ -116,6 +117,7 @@ class _PersonalInformationRegistrationPageState
                 ),
                 controller: documentID,
                 maxLength: 8,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 keyboardType: const TextInputType.numberWithOptions(),
                 validator: (value) {
                   if (value == null || value.isEmpty || value.length < 8) {
@@ -143,6 +145,7 @@ class _PersonalInformationRegistrationPageState
                   labelText: 'Correo electronico',
                 ),
                 controller: emailController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
                   if (value == null || value.isEmpty || !value.contains('@')) {
                     return 'Ingrese correctamente su correo';

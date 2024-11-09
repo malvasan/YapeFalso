@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,7 +92,7 @@ class PasswordField extends ConsumerWidget {
     final password = ref.watch(passwordCreationProvider);
 
     if (password.length == 6) {
-      context.router.push(const RegistrationConfirmationRoute());
+      context.router.push(const AccountTypeSelectionRoute());
     }
 
     if (password.isEmpty) {

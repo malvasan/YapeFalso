@@ -154,11 +154,7 @@ class _CameraPageState extends State<CameraPage> {
       final String? displayValue = barcode.displayValue;
       final String? rawValue = barcode.rawValue;
       final validFormat = RegExp(r'^(YP-)\d{9}');
-      if (!validFormat.hasMatch(rawValue ?? ''))
-        break;
-      else {
-        changePage();
-      }
+      if (validFormat.hasMatch(rawValue ?? '')) changePage();
       log('inputImage');
       log(inputImage.bytes.toString());
       log('format');
