@@ -1,20 +1,28 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 
+import 'package:yapefalso/domain/user_metadata.dart';
+import 'package:yapefalso/presentation/payment.dart/payment_controller.dart';
+import 'package:yapefalso/presentation/payment.dart/user_transfer_controller.dart';
+
 @RoutePage()
-class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+class PaymentPage extends ConsumerStatefulWidget {
+  const PaymentPage({super.key, required this.phone});
+  final int phone;
 
   @override
-  State<PaymentPage> createState() => _PaymentPageState();
+  ConsumerState<PaymentPage> createState() => _PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage> {
-  late var _amountController;
-  late var _textController;
+class _PaymentPageState extends ConsumerState<PaymentPage> {
+  late TextEditingController _amountController;
+  late TextEditingController _textController;
 
   @override
   void initState() {
@@ -32,12 +40,183 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      paymentProvider,
+      (_, state) => state.whenData(
+        (data) {
+          context.router
+              .push(ConfirmationRoute(transferData: data, yapeo: true));
+        },
+      ),
+    );
+
+    final paymentProviderState = ref.watch(paymentProvider);
+    final isLoading = paymentProviderState.isLoading;
+    final isError = paymentProviderState is AsyncError<int>;
+
+    final userReceiver = ref.watch(userTransferProvider(phone: widget.phone));
+
+    return userReceiver.when(
+      data: (data) {
+        return Stack(children: [
+          PaymentBody(
+            amountController: _amountController,
+            textController: _textController,
+            name: data.name,
+            userReceiver: data,
+            onPressed: () async {
+              ref.read(paymentProvider.notifier).payment(
+                  userNote: _textController.text,
+                  amount: double.parse(_amountController.text),
+                  receiverID: data.id);
+            },
+          ),
+          Visibility(
+            visible: isLoading,
+            child: Material(
+              color: Colors.black.withAlpha(150),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Gap(10),
+                      CircularProgressIndicator(),
+                      Gap(10),
+                      Text('Yapeando'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: isError,
+            child: Material(
+              color: Colors.black.withAlpha(150),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Gap(10),
+                      const Text(
+                        'Te falta saldo para este yapeo',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
+                      ),
+                      const Gap(10),
+                      TextButton(
+                        onPressed: () {
+                          ref.invalidate(paymentProvider);
+                        },
+                        child: const Text(
+                          'Entendido',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Color(0xFF2073E8),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ]);
+      },
+      error: (error, stackTrace) {
+        return PaymentBody(
+          amountController: _amountController,
+          textController: _textController,
+          name: widget.phone.toString(),
+          onPressed: null,
+        );
+      },
+      loading: () {
+        return Stack(children: [
+          PaymentBody(
+            amountController: _amountController,
+            textController: _textController,
+            name: 'Buscando Yapero',
+            onPressed: null,
+          ),
+          Visibility(
+            visible: true,
+            child: Material(
+              color: Colors.black.withAlpha(150),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Gap(10),
+                      CircularProgressIndicator(),
+                      Gap(10),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ]);
+      },
+    );
+  }
+}
+
+class PaymentBody extends StatelessWidget {
+  const PaymentBody({
+    super.key,
+    required amountController,
+    required textController,
+    required this.name,
+    this.onPressed,
+    this.userReceiver,
+  })  : _amountController = amountController,
+        _textController = textController;
+
+  final dynamic _amountController;
+  final dynamic _textController;
+  final UserMetadata? userReceiver;
+  final String name;
+  final void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => context.router.back(),
+          onPressed: () {
+            final stack = context.router.stack;
+            final path = stack[stack.length - 2].name;
+            if (path != null) {
+              if (path == 'CameraRoute') {
+                context.router.maybePop<bool>(false);
+              }
+            }
+            context.router.maybePop();
+          },
           icon: const Icon(
             Icons.arrow_back,
           ),
@@ -61,7 +240,7 @@ class _PaymentPageState extends State<PaymentPage> {
               children: [
                 const Gap(20),
                 Text(
-                  'Full Name',
+                  name,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w500,
@@ -178,8 +357,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       const Gap(10),
                       Expanded(
                         child: FilledButton.tonalIcon(
-                          onPressed: () => context.router
-                              .push(ConfirmationRoute(yapeo: true)),
+                          onPressed: onPressed,
                           label: const Text('Yapear'),
                           style: FilledButton.styleFrom(
                               shape: const RoundedRectangleBorder(
@@ -218,3 +396,18 @@ class SinglePeriodEnforcer extends TextInputFormatter {
     return oldValue;
   }
 }
+
+// context.router.push(
+                            //   ConfirmationRoute(
+                            //     yapeo: true,
+                            //     transferData: Transfer(
+                            //       id: 0,
+                            //       amount: 0,
+                            //       userNote: '',
+                            //       name: 'name',
+                            //       phoneNumber: 9234,
+                            //       timestamp: DateTime.now(),
+                            //       isPositive: null,
+                            //     ),
+                            //   ),
+                            // );

@@ -1,20 +1,23 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:yapefalso/autoroute/autoroute.gr.dart';
+
+import 'package:yapefalso/presentation/log_out/sign_out_controller.dart';
 
 @RoutePage()
-class LogOutPage extends StatelessWidget {
+class LogOutPage extends ConsumerWidget {
   const LogOutPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(signOutProvider).isLoading;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => context.router.back(),
+          onPressed: () => context.router.maybePop(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -56,7 +59,7 @@ class LogOutPage extends StatelessWidget {
                       children: [
                         Card(
                           elevation: 7,
-                          color: const Color.fromARGB(144, 196, 21, 235),
+                          color: const Color(0xFF8C3D99),
                           child: Padding(
                             padding: const EdgeInsets.all(18.0),
                             child: Icon(
@@ -78,7 +81,7 @@ class LogOutPage extends StatelessWidget {
                       children: [
                         Card(
                           elevation: 7,
-                          color: const Color.fromARGB(144, 196, 21, 235),
+                          color: const Color(0xFF8C3D99),
                           child: Padding(
                             padding: const EdgeInsets.all(18.0),
                             child: Icon(
@@ -100,7 +103,7 @@ class LogOutPage extends StatelessWidget {
                       children: [
                         Card(
                           elevation: 7,
-                          color: const Color.fromARGB(144, 196, 21, 235),
+                          color: const Color(0xFF8C3D99),
                           child: Padding(
                             padding: const EdgeInsets.all(18.0),
                             child: Icon(
@@ -122,7 +125,7 @@ class LogOutPage extends StatelessWidget {
                       children: [
                         Card(
                           elevation: 7,
-                          color: const Color.fromARGB(144, 196, 21, 235),
+                          color: const Color(0xFF8C3D99),
                           child: Padding(
                             padding: const EdgeInsets.all(18.0),
                             child: Icon(
@@ -395,13 +398,32 @@ class LogOutPage extends StatelessWidget {
                   title: const Text(
                     'Cerrar sesión',
                   ),
-                  onTap: () => context.router.replaceAll(
-                    [
-                      const FirstRoute(),
+                  onTap: () => ref.read(signOutProvider.notifier).signOut(),
+                ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: isLoading,
+            child: Material(
+              color: Colors.black.withAlpha(150),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Gap(10),
+                      CircularProgressIndicator(),
+                      Gap(10),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ],

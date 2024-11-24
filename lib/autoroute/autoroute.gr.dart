@@ -10,10 +10,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i17;
 import 'package:flutter/material.dart' as _i18;
-import 'package:yapefalso/first_page.dart' as _i7;
+import 'package:yapefalso/domain/transfer.dart' as _i19;
 import 'package:yapefalso/presentation/confirmation/confirmation.dart' as _i4;
 import 'package:yapefalso/presentation/contact_search/contact_search_page.dart'
     as _i5;
+import 'package:yapefalso/presentation/first_page/first_page.dart' as _i7;
 import 'package:yapefalso/presentation/log_out/log_out_page.dart' as _i8;
 import 'package:yapefalso/presentation/login/login_email_page.dart' as _i9;
 import 'package:yapefalso/presentation/login/login_password_page.dart' as _i10;
@@ -99,12 +100,14 @@ class ConfirmationRoute extends _i17.PageRouteInfo<ConfirmationRouteArgs> {
   ConfirmationRoute({
     required bool yapeo,
     _i18.Key? key,
+    required _i19.Transfer transferData,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           ConfirmationRoute.name,
           args: ConfirmationRouteArgs(
             yapeo: yapeo,
             key: key,
+            transferData: transferData,
           ),
           initialChildren: children,
         );
@@ -118,6 +121,7 @@ class ConfirmationRoute extends _i17.PageRouteInfo<ConfirmationRouteArgs> {
       return _i4.ConfirmationPage(
         yapeo: args.yapeo,
         key: args.key,
+        transferData: args.transferData,
       );
     },
   );
@@ -127,15 +131,18 @@ class ConfirmationRouteArgs {
   const ConfirmationRouteArgs({
     required this.yapeo,
     this.key,
+    required this.transferData,
   });
 
   final bool yapeo;
 
   final _i18.Key? key;
 
+  final _i19.Transfer transferData;
+
   @override
   String toString() {
-    return 'ConfirmationRouteArgs{yapeo: $yapeo, key: $key}';
+    return 'ConfirmationRouteArgs{yapeo: $yapeo, key: $key, transferData: $transferData}';
   }
 }
 
@@ -236,10 +243,17 @@ class LoginEmailRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.LoginPasswordPage]
-class LoginPasswordRoute extends _i17.PageRouteInfo<void> {
-  const LoginPasswordRoute({List<_i17.PageRouteInfo>? children})
-      : super(
+class LoginPasswordRoute extends _i17.PageRouteInfo<LoginPasswordRouteArgs> {
+  LoginPasswordRoute({
+    required String email,
+    _i18.Key? key,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
           LoginPasswordRoute.name,
+          args: LoginPasswordRouteArgs(
+            email: email,
+            key: key,
+          ),
           initialChildren: children,
         );
 
@@ -248,9 +262,29 @@ class LoginPasswordRoute extends _i17.PageRouteInfo<void> {
   static _i17.PageInfo page = _i17.PageInfo(
     name,
     builder: (data) {
-      return const _i10.LoginPasswordPage();
+      final args = data.argsAs<LoginPasswordRouteArgs>();
+      return _i10.LoginPasswordPage(
+        email: args.email,
+        key: args.key,
+      );
     },
   );
+}
+
+class LoginPasswordRouteArgs {
+  const LoginPasswordRouteArgs({
+    required this.email,
+    this.key,
+  });
+
+  final String email;
+
+  final _i18.Key? key;
+
+  @override
+  String toString() {
+    return 'LoginPasswordRouteArgs{email: $email, key: $key}';
+  }
 }
 
 /// generated route for
@@ -274,10 +308,17 @@ class PasswordRegistrationRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i12.PaymentPage]
-class PaymentRoute extends _i17.PageRouteInfo<void> {
-  const PaymentRoute({List<_i17.PageRouteInfo>? children})
-      : super(
+class PaymentRoute extends _i17.PageRouteInfo<PaymentRouteArgs> {
+  PaymentRoute({
+    _i18.Key? key,
+    required int phone,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
           PaymentRoute.name,
+          args: PaymentRouteArgs(
+            key: key,
+            phone: phone,
+          ),
           initialChildren: children,
         );
 
@@ -286,9 +327,29 @@ class PaymentRoute extends _i17.PageRouteInfo<void> {
   static _i17.PageInfo page = _i17.PageInfo(
     name,
     builder: (data) {
-      return const _i12.PaymentPage();
+      final args = data.argsAs<PaymentRouteArgs>();
+      return _i12.PaymentPage(
+        key: args.key,
+        phone: args.phone,
+      );
     },
   );
+}
+
+class PaymentRouteArgs {
+  const PaymentRouteArgs({
+    this.key,
+    required this.phone,
+  });
+
+  final _i18.Key? key;
+
+  final int phone;
+
+  @override
+  String toString() {
+    return 'PaymentRouteArgs{key: $key, phone: $phone}';
+  }
 }
 
 /// generated route for

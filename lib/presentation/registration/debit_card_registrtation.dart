@@ -1,7 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/presentation/first_page/session_controller.dart';
+import 'package:yapefalso/presentation/registration/sign_up_controller.dart';
+import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
 
 List<String> _months = [
   '01',
@@ -26,14 +31,16 @@ List<String> _years = [
 ];
 
 @RoutePage()
-class DebitCardRegistrtation extends StatefulWidget {
+class DebitCardRegistrtation extends ConsumerStatefulWidget {
   const DebitCardRegistrtation({super.key});
 
   @override
-  State<DebitCardRegistrtation> createState() => _DebitCardRegistrtationState();
+  ConsumerState<DebitCardRegistrtation> createState() =>
+      _DebitCardRegistrtationState();
 }
 
-class _DebitCardRegistrtationState extends State<DebitCardRegistrtation> {
+class _DebitCardRegistrtationState
+    extends ConsumerState<DebitCardRegistrtation> {
   late TextEditingController cardID;
   String dropdownMonth = _months[0];
   String dropdownYear = _years[0];
@@ -53,161 +60,223 @@ class _DebitCardRegistrtationState extends State<DebitCardRegistrtation> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          centerTitle: true,
-          title: Text(
-            'Crear cuenta',
-            style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
-          ),
-          automaticallyImplyLeading: false,
-        ),
-        body: Stack(
-          children: [
-            Container(
-              color: Theme.of(context).primaryColor,
-              height: 230,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Registra tu tarjeta BCP',
-                    maxLines: 2,
-                    style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    'Conecta tu cuenta de ahorros o corriente en soles\n para hacer transferencias en Yape.',
-                    maxLines: 2,
-                    style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const Gap(50),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.abc_outlined,
-                            size: 40,
-                          ),
-                          const Text('Número de tarjeta'),
-                          TextFormField(
-                            controller: cardID,
-                            maxLength: 16,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: false,
-                              signed: false,
-                            ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.length < 16) {
-                                return 'Ingrese correctamente su número de tarjeta';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              if (_formKey.currentState!.validate()) {
-                                context.router.push(
-                                    const RegistrationConfirmationRoute());
-                                setState(() {});
-                              }
-                            },
-                          ),
-                          const Gap(20),
-                          Row(
-                            children: [
-                              const Expanded(
-                                flex: 3,
-                                child: Text(
-                                  'Vencimiento',
-                                  textAlign: TextAlign.end,
-                                ),
-                              ),
-                              const Gap(10),
-                              Flexible(
-                                flex: 1,
-                                child: DropdownButtonFormField(
-                                  decoration: const InputDecoration(
-                                    border: null,
-                                  ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  value: dropdownMonth,
-                                  items: _months.map(
-                                    (e) {
-                                      return DropdownMenuItem(
-                                          value: e, child: Text(e));
-                                    },
-                                  ).toList(),
-                                  onChanged: (value) {
-                                    // This is called when the user selects an item.
-                                    dropdownMonth = value!;
-                                    if (_formKey.currentState!.validate()) {
-                                      context.router.push(
-                                          const RegistrationConfirmationRoute());
-                                      setState(() {});
-                                    }
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                              const Gap(10),
-                              Flexible(
-                                flex: 1,
-                                child: DropdownButtonFormField(
-                                  // decoration: const InputDecoration(
-                                  //   border: OutlineInputBorder(),
-                                  //   labelText: 'Tipo de documento',
-                                  // ),
-                                  value: dropdownYear,
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  items: _years.map(
-                                    (e) {
-                                      return DropdownMenuItem(
-                                          value: e, child: Text(e));
-                                    },
-                                  ).toList(),
-                                  onChanged: (value) {
-                                    // This is called when the user selects an item.
-                                    dropdownYear = value!;
-                                    if (_formKey.currentState!.validate()) {
-                                      context.router.push(
-                                          const RegistrationConfirmationRoute());
-                                      setState(() {});
-                                    }
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+    ref.listen(
+      authenticationStateProvider,
+      (_, state) => state.whenData(
+        (data) {
+          final event = data.event;
+          if (event == AuthChangeEvent.signedIn) {
+            context.router.push(const RegistrationConfirmationRoute());
+          }
+        },
       ),
     );
+
+    final isLoading = ref.watch(signUpProvider).isLoading;
+
+    return Stack(children: [
+      Form(
+        key: _formKey,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).primaryColor,
+            centerTitle: true,
+            title: Text(
+              'Crear cuenta',
+              style:
+                  TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
+            ),
+            automaticallyImplyLeading: false,
+          ),
+          body: Stack(
+            children: [
+              Container(
+                color: Theme.of(context).primaryColor,
+                height: 230,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Registra tu tarjeta BCP',
+                      maxLines: 2,
+                      style: TextStyle(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      'Conecta tu cuenta de ahorros o corriente en soles\n para hacer transferencias en Yape.',
+                      maxLines: 2,
+                      style: TextStyle(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    const Gap(50),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.abc_outlined,
+                              size: 40,
+                            ),
+                            const Text('Número de tarjeta'),
+                            TextFormField(
+                              controller: cardID,
+                              maxLength: 16,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                decimal: false,
+                                signed: false,
+                              ),
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.length < 16) {
+                                  return 'Ingrese correctamente su número de tarjeta';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                if (_formKey.currentState!.validate()) {
+                                  ref
+                                      .read(
+                                          userRegistrationDataProvider.notifier)
+                                      .updateAccountNumber(cardID.text);
+                                  signUp(ref);
+                                  setState(() {});
+                                }
+                              },
+                            ),
+                            const Gap(20),
+                            Row(
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    'Vencimiento',
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Flexible(
+                                  flex: 1,
+                                  child: DropdownButtonFormField(
+                                    decoration: const InputDecoration(
+                                      border: null,
+                                    ),
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    value: null,
+                                    items: _months.map(
+                                      (e) {
+                                        return DropdownMenuItem(
+                                            value: e, child: Text(e));
+                                      },
+                                    ).toList(),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Seleccione';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (value) {
+                                      // This is called when the user selects an item.
+                                      dropdownMonth = value!;
+                                      if (_formKey.currentState!.validate()) {
+                                        ref
+                                            .read(userRegistrationDataProvider
+                                                .notifier)
+                                            .updateAccountNumber(cardID.text);
+                                        signUp(ref);
+                                      }
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                                const Gap(10),
+                                Flexible(
+                                  flex: 1,
+                                  child: DropdownButtonFormField(
+                                    value: null,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    items: _years.map(
+                                      (e) {
+                                        return DropdownMenuItem(
+                                            value: e, child: Text(e));
+                                      },
+                                    ).toList(),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Seleccione';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (value) {
+                                      dropdownYear = value!;
+                                      if (_formKey.currentState!.validate()) {
+                                        ref
+                                            .read(userRegistrationDataProvider
+                                                .notifier)
+                                            .updateAccountNumber(cardID.text);
+                                        signUp(ref);
+                                        // context.router.push(
+                                        //     const RegistrationConfirmationRoute());
+                                      }
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      Visibility(
+        visible: isLoading,
+        child: Material(
+          color: Colors.black.withAlpha(150),
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Gap(10),
+                  CircularProgressIndicator(),
+                  Gap(10),
+                  Text('Validando datos'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  void signUp(WidgetRef ref) {
+    ref.read(signUpProvider.notifier).signUp();
   }
 }

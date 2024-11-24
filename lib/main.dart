@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.dart';
-
-import 'package:yapefalso/presentation/confirmation/confirmation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  const supabaseUrl = 'https://dwcurxogbbsqjuagfuch.supabase.co';
+  const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3Y3VyeG9nYmJzcWp1YWdmdWNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzEwODU1NTIsImV4cCI6MjA0NjY2MTU1Mn0.OE9ywfv_vuQynhj42gQN0BaUiqJ5LXacDh3GcWZIwG0',
+  );
 
   runApp(ProviderScope(child: MainApp()));
 }
@@ -21,8 +28,9 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromRGBO(63, 13, 74, 1),
+          seedColor: const Color(0xFF742284),
         ),
+        primaryColor: const Color(0xFF742284),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.black,

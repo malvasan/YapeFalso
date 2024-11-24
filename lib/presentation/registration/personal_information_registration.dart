@@ -1,23 +1,28 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
 
 enum _DocumentType { DNI }
 
 @RoutePage()
-class PersonalInformationRegistrationPage extends StatefulWidget {
+class PersonalInformationRegistrationPage extends ConsumerStatefulWidget {
   const PersonalInformationRegistrationPage({super.key});
 
   @override
-  State<PersonalInformationRegistrationPage> createState() =>
+  ConsumerState<PersonalInformationRegistrationPage> createState() =>
       _PersonalInformationRegistrationPageState();
 }
 
 class _PersonalInformationRegistrationPageState
-    extends State<PersonalInformationRegistrationPage> {
+    extends ConsumerState<PersonalInformationRegistrationPage> {
   late TextEditingController emailController;
-  late TextEditingController documentID;
+  late TextEditingController documentIDController;
+  late TextEditingController nameController;
   String dropdownValue = _DocumentType.DNI.name;
   var _buttonEnabled = false;
 
@@ -27,14 +32,16 @@ class _PersonalInformationRegistrationPageState
   void initState() {
     super.initState();
     emailController = TextEditingController();
-    documentID = TextEditingController();
+    documentIDController = TextEditingController();
+    nameController = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
-    documentID.dispose();
+    documentIDController.dispose();
+    nameController.dispose();
   }
 
   @override
@@ -49,7 +56,7 @@ class _PersonalInformationRegistrationPageState
           style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
         ),
         leading: IconButton(
-          onPressed: () => context.router.back(),
+          onPressed: () => context.router.maybePop(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -115,7 +122,7 @@ class _PersonalInformationRegistrationPageState
                   border: OutlineInputBorder(),
                   labelText: 'N de documento',
                 ),
-                controller: documentID,
+                controller: documentIDController,
                 maxLength: 8,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 keyboardType: const TextInputType.numberWithOptions(),
@@ -136,7 +143,7 @@ class _PersonalInformationRegistrationPageState
                 },
               ),
             ),
-            const Gap(35),
+            const Gap(15),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: TextFormField(
@@ -163,6 +170,33 @@ class _PersonalInformationRegistrationPageState
                 },
               ),
             ),
+            const Gap(35),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nombre Completo',
+                ),
+                controller: nameController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ingrese correctamente su nombre';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  if (_formKey.currentState!.validate()) {
+                    _buttonEnabled = true;
+                    setState(() {});
+                  } else {
+                    _buttonEnabled = false;
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -171,11 +205,13 @@ class _PersonalInformationRegistrationPageState
         child: FilledButton(
           onPressed: _buttonEnabled
               ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Processing Data'),
-                    ),
-                  );
+                  ref
+                      .read(userRegistrationDataProvider.notifier)
+                      .updatePersonalInformation(
+                        newName: nameController.text,
+                        newEmail: emailController.text,
+                        newDNI: int.parse(documentIDController.text),
+                      );
                   context.router.push(const PasswordRegistrationRoute());
                 }
               : null,

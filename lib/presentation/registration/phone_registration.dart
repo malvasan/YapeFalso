@@ -1,17 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
 
 @RoutePage()
-class PhoneRegistrationPage extends StatefulWidget {
+class PhoneRegistrationPage extends ConsumerStatefulWidget {
   const PhoneRegistrationPage({super.key});
 
   @override
-  State<PhoneRegistrationPage> createState() => _PhoneRegistrationPageState();
+  ConsumerState<PhoneRegistrationPage> createState() =>
+      _PhoneRegistrationPageState();
 }
 
-class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
+class _PhoneRegistrationPageState extends ConsumerState<PhoneRegistrationPage> {
   late TextEditingController phone;
   var _buttonEnabled = false;
 
@@ -37,7 +40,7 @@ class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => context.router.back(),
+          onPressed: () => context.router.maybePop(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -121,11 +124,9 @@ class _PhoneRegistrationPageState extends State<PhoneRegistrationPage> {
         child: FilledButton(
           onPressed: _buttonEnabled
               ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Processing Data'),
-                    ),
-                  );
+                  ref
+                      .read(userRegistrationDataProvider.notifier)
+                      .updatePhoneNumber(int.parse(phone.text));
                   context.router
                       .push(const PersonalInformationRegistrationRoute());
                 }

@@ -78,17 +78,6 @@ class PasswordField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: agregar el provider de google para que sea llamado al tener 6 caracteres
-    // ref.listen(
-    //   registrationControllerProvider,
-    //   (_, state) => state.whenOrNull(
-    //     error: (error, stackTrace) {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //         SnackBar(content: Text(error.toString())),
-    //       );
-    //     },
-    //   ),
-    // );
     final password = ref.watch(passwordCreationProvider);
 
     if (password.length == 6) {

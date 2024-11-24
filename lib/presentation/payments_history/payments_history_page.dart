@@ -1,79 +1,247 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/domain/transfer.dart';
+import 'package:yapefalso/presentation/payments_history/transfers_controller.dart';
+import 'package:yapefalso/presentation/payments_history/user_controller.dart';
+import 'package:yapefalso/presentation/payments_history/user_credit_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
-class PaymentsPage extends StatelessWidget {
+class PaymentsPage extends ConsumerWidget {
   const PaymentsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-        leading: IconButton(
-          onPressed: () => context.router.push(const LogOutRoute()),
-          icon: const Icon(
-            Icons.menu,
-          ),
-        ),
-        //TODO: obtain user name from database
-        title: const Text('User name'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.headset_mic_outlined),
-          ),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.notification_add_outlined))
-        ],
-      ),
-      body: CustomScrollView(
-        slivers: [
-          const SliverPersistentHeader(
-            pinned: true,
-            delegate: CustomSliverGrid(minExtent: 210, maxExtent: 210),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                Card(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: const ListTile(
-                    leading: Icon(Icons.access_alarm_rounded),
-                    title: Text('Main information'),
-                    subtitle: Text('Extra information'),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(userProvider).isLoading;
+
+    return ref.watch(userProvider).when(
+          skipLoadingOnRefresh: false,
+          data: (data) {
+            return Scaffold(
+              backgroundColor: const Color(0xFF4A1972),
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                leading: IconButton(
+                  onPressed: () => context.router.push(const LogOutRoute()),
+                  icon: const Icon(
+                    Icons.menu,
                   ),
                 ),
-                const Gap(10),
+                title: Text(data.name),
+                actions: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.headset_mic_outlined),
+                  ),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.notification_add_outlined))
+                ],
+              ),
+              body: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.15, 1.0],
+                    colors: [
+                      Theme.of(context).primaryColor,
+                      const Color(0xFF4A1972),
+                    ],
+                  ),
+                ),
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverPersistentHeader(
+                      pinned: true,
+                      delegate:
+                          CustomSliverGrid(minExtent: 210, maxExtent: 210),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: const Color(0xFF4A1972),
+                        child: Column(
+                          children: [
+                            Card(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              child: const ListTile(
+                                leading: Icon(Icons.access_alarm_rounded),
+                                title: Text('Main information'),
+                                subtitle: Text('Extra information'),
+                              ),
+                            ),
+                            const Gap(10),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Container(
+                        color: const Color(0xFF4A1972),
+                        child: const PaymentListHeader(),
+                      ),
+                    ),
+                    const TransfersHistory(),
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              bottomNavigationBar: const PaymentListFooter(),
+            );
+          },
+          error: (error, stackTrace) => Center(
+            child: Column(
+              children: [
+                ElevatedButton(
+                    onPressed: () => ref.invalidate(userProvider),
+                    child: Text(error.toString()))
               ],
             ),
           ),
-          const SliverToBoxAdapter(
-            child: PaymentListHeader(),
-          ),
-          DecoratedSliver(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border.all(
-                color: Theme.of(context).scaffoldBackgroundColor,
+          loading: () {
+            return Stack(children: [
+              Scaffold(
+                  backgroundColor: const Color(0xFF4A1972),
+                  appBar: AppBar(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    leading: IconButton(
+                      onPressed: () => context.router.push(const LogOutRoute()),
+                      icon: const Icon(
+                        Icons.menu,
+                      ),
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.headset_mic_outlined),
+                      ),
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.notification_add_outlined))
+                    ],
+                  ),
+                  body: Column(
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: const [0.25, 1.0],
+                              colors: [
+                                Theme.of(context).primaryColor,
+                                const Color(0xFF4A1972),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 6,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            border: Border.all(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+              Visibility(
+                visible: isLoading,
+                child: Material(
+                  color: Colors.black.withAlpha(150),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Gap(10),
+                          CircularProgressIndicator(),
+                          Gap(10),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return const PaymentHistoryCard();
-              }, childCount: 10),
+            ]);
+          },
+        );
+  }
+}
+
+class TransfersHistory extends ConsumerWidget {
+  const TransfersHistory({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(transfersProvider).when(
+          skipLoadingOnRefresh: false,
+          data: (data) {
+            return DecoratedSliver(
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border.all(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+              // sliver: SliverList(
+              //   delegate: SliverChildBuilderDelegate((context, index) {
+              //     return const PaymentHistoryCard();
+              //   }, childCount: 10),
+              // ),
+              sliver: SliverList.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return PaymentHistoryCard(transfer: data[index]);
+                },
+              ),
+            );
+          },
+          error: (error, stackTrace) => SliverToBoxAdapter(
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: const PaymentListFooter(),
-    );
+          loading: () => SliverToBoxAdapter(
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+        );
   }
 }
 
@@ -91,7 +259,17 @@ class CustomSliverGrid extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).primaryColor,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.25, 1.0],
+          colors: [
+            Theme.of(context).primaryColor,
+            const Color(0xFF4A1972),
+          ],
+        ),
+      ),
       child: GridView.count(
         crossAxisCount: 4,
         children: [
@@ -112,13 +290,13 @@ class CustomSliverGrid extends SliverPersistentHeaderDelegate {
   }
 }
 
-class PaymentListHeader extends StatelessWidget {
+class PaymentListHeader extends ConsumerWidget {
   const PaymentListHeader({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -149,8 +327,9 @@ class PaymentListHeader extends StatelessWidget {
                     ),
                   )),
                   IconButton(
-                    //TODO: Add refresh option de firebase
-                    onPressed: () {},
+                    onPressed: () {
+                      ref.invalidate(transfersProvider);
+                    },
                     icon: const Icon(Icons.refresh),
                     color: const Color.fromARGB(255, 16, 203, 180),
                   ),
@@ -238,33 +417,35 @@ class PaymentListFooter extends StatelessWidget {
   }
 }
 
-class Balance extends StatefulWidget {
+class Balance extends ConsumerStatefulWidget {
   const Balance({super.key});
 
   @override
-  State<Balance> createState() => _BalanceState();
+  ConsumerState<Balance> createState() => _BalanceState();
 }
 
-class _BalanceState extends State<Balance> {
-  //TODO: retrieve the balance from database
-
+class _BalanceState extends ConsumerState<Balance> {
   bool showBalance = false;
   @override
   Widget build(BuildContext context) {
     //final balance = 0;
-
+    final isLoading = ref.watch(creditProvider).isLoading;
     return Card(
       color: Theme.of(context).scaffoldBackgroundColor,
       elevation: 7,
       child: ListTile(
         iconColor: Theme.of(context).primaryColor,
         textColor: Theme.of(context).primaryColor,
-
         leading: TextButton.icon(
-          onPressed: () {
-            showBalance = !showBalance;
-            setState(() {});
-          },
+          onPressed: isLoading
+              ? null
+              : () {
+                  showBalance = !showBalance;
+                  if (showBalance) {
+                    ref.invalidate(creditProvider);
+                  }
+                  setState(() {});
+                },
           icon: showBalance
               ? const Icon(Icons.remove_red_eye_outlined)
               : const Icon(Icons.remove_red_eye),
@@ -272,46 +453,75 @@ class _BalanceState extends State<Balance> {
               ? const Text('Ocultar saldo')
               : const Text('Mostrar saldo'),
         ),
-        //TODO: change with widget BalanceField
-        trailing: showBalance ? const Text('S/. 45') : null,
+        trailing: showBalance ? const BalanceField() : null,
       ),
     );
   }
 }
 
-//TODO: retrieve data in real time
-// class BalanceField extends ConsumerWidget {
-//   const BalanceField({super.key});
+class BalanceField extends ConsumerWidget {
+  const BalanceField({super.key});
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return ref.watch(firebaseImageProvider).when(
-//         loading: () => const CircularProgressIndicator(),
-//         error: (error, stackTrace) {},
-//         data: (balance) {
-//           return Text('S/. $balance');
-//         });
-//   }
-// }
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(creditProvider).when(
+        skipLoadingOnRefresh: false,
+        loading: () => const Padding(
+              padding: EdgeInsets.all(1.0),
+              child: CircularProgressIndicator(),
+            ),
+        error: (error, stackTrace) => Text('$error'),
+        data: (balance) {
+          return Text(
+            'S/ $balance',
+            style: const TextStyle(color: Colors.black, fontSize: 16),
+          );
+        });
+  }
+}
 
 class PaymentHistoryCard extends StatelessWidget {
-  const PaymentHistoryCard({super.key});
-  //TODO: use the data retrieved and use it
+  const PaymentHistoryCard({super.key, required this.transfer});
+
+  final Transfer transfer;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-          title: const Text('Full name'),
-          subtitle: const Text('Full date'),
-          trailing: const Text('Payment'),
+          title: Text(
+            transfer.name,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+          subtitle: Text(
+            convertToYapeFormat(transfer.createdAt),
+            style: TextStyle(color: Theme.of(context).disabledColor),
+          ),
+          trailing: transfer.isPositive
+              ? Text(
+                  'S/ ${transfer.amount.toStringAsPrecision(2)}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
+                )
+              : Text(
+                  '- S/ ${transfer.amount.toStringAsPrecision(2)}',
+                  style: const TextStyle(
+                    color: Color(0xFFD3526E),
+                    fontSize: 18,
+                  ),
+                ),
           onTap: () => context.router.push(
-            ConfirmationRoute(yapeo: false),
+            ConfirmationRoute(
+              yapeo: false,
+              transferData: transfer,
+            ),
           ),
         ),
         const Divider(
           indent: 10,
           endIndent: 10,
+          height: 1,
         ),
       ],
     );

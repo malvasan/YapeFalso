@@ -1,7 +1,7 @@
 name: yapefalso
 description: "A project to replicate yape for practice purporse."
 publish_to: 'none'
-version: 1.8.0
+version: 2.0.0
 
 environment:
   sdk: ^3.5.0
@@ -17,6 +17,10 @@ dependencies:
   sliver_tools: ^0.2.12
   camera_android: ^0.10.9+14
   auto_route: ^9.2.2
+  supabase_flutter: ^2.8.0
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  flutter_contacts: ^1.1.9+2
 
 dev_dependencies:
   flutter_test:
@@ -26,7 +30,9 @@ dev_dependencies:
   riverpod_lint:
   custom_lint:  
   auto_route_generator:
-  build_runner:
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
 
 flutter:
   uses-material-design: true

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'password_registration_controller.g.dart';
@@ -16,15 +14,20 @@ class PasswordCreation extends _$PasswordCreation {
       return;
     }
     state = [...state, value];
-    if (length == 6) {
-      log('call authentication');
-    }
   }
 
   void decrease() {
     state = [
       for (var value = 0; value < state.length - 1; value++) value,
     ];
+  }
+
+  String parseList() {
+    var password = '';
+    for (var value = 0; value < state.length; value++) {
+      password = password + state[value].toString();
+    }
+    return password;
   }
 
   int get length => state.length;

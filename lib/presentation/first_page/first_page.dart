@@ -1,14 +1,33 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/presentation/first_page/session_controller.dart';
 
 @RoutePage()
-class FirstPage extends StatelessWidget {
+class FirstPage extends ConsumerWidget {
   const FirstPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(
+      authenticationStateProvider,
+      (_, state) => state.whenData(
+        (data) {
+          final event = data.event;
+
+          if (event == AuthChangeEvent.signedOut) {
+            context.router.replaceAll(
+              [
+                const FirstRoute(),
+              ],
+            );
+          }
+        },
+      ),
+    );
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
@@ -64,9 +83,9 @@ class FirstPage extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color.fromARGB(144, 196, 21, 235),
+                backgroundColor: const Color(0xFF8C3D99),
                 side: const BorderSide(
-                  color: Color.fromARGB(144, 196, 21, 235),
+                  color: Color(0xFF8C3D99),
                 ),
                 minimumSize: const Size(371.4, 50),
               ),

@@ -6,7 +6,7 @@ part of 'login_password_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$passwordHash() => r'51dffff8934899e83715d7a2e295b159e3945cc2';
+String _$passwordHash() => r'f2bd95ee3721278098175c64c9e72293eb00a70d';
 
 /// See also [Password].
 @ProviderFor(Password)
