@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -264,7 +265,10 @@ class _DebitCardRegistrtationState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Gap(10),
-                  CircularProgressIndicator(),
+                  CupertinoActivityIndicator(
+                    radius: 15,
+                    color: Color(0xFF4A1972),
+                  ),
                   Gap(10),
                   Text('Validando datos'),
                 ],

@@ -1,22 +1,14 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:yapefalso/data/data_base_repository.dart';
 import 'package:yapefalso/domain/transfer.dart';
-import 'package:yapefalso/presentation/payment.dart/user_transfer_controller.dart';
 
 part 'payment_controller.g.dart';
 
 @riverpod
 class Payment extends _$Payment {
   @override
-  FutureOr<Transfer> build() {
-    return Transfer(
-        id: 0,
-        amount: 0,
-        userNote: null,
-        name: '',
-        phoneNumber: 0,
-        createdAt: DateTime.now(),
-        isPositive: false);
+  FutureOr<Transfer?> build() {
+    return null;
   }
 
   Future<void> payment(

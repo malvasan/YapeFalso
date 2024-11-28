@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -81,7 +82,12 @@ class _ContactsListState extends State<ContactsList> {
       return const Center(child: Text('Permission denied'));
     }
     if (_contacts == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CupertinoActivityIndicator(
+          radius: 15,
+          color: Color(0xFF4A1972),
+        ),
+      );
     }
     return CustomScrollView(
       slivers: [

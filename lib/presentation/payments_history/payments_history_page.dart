@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -187,7 +188,10 @@ class PaymentsPage extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Gap(10),
-                          CircularProgressIndicator(),
+                          CupertinoActivityIndicator(
+                            radius: 15,
+                            color: Color(0xFF4A1972),
+                          ),
                           Gap(10),
                         ],
                       ),
@@ -197,50 +201,6 @@ class PaymentsPage extends ConsumerWidget {
               ),
             ]);
           },
-        );
-  }
-}
-
-class TransfersHistory extends ConsumerWidget {
-  const TransfersHistory({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(transfersProvider).when(
-          skipLoadingOnRefresh: false,
-          data: (data) {
-            return DecoratedSliver(
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                border: Border.all(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-              ),
-              // sliver: SliverList(
-              //   delegate: SliverChildBuilderDelegate((context, index) {
-              //     return const PaymentHistoryCard();
-              //   }, childCount: 10),
-              // ),
-              sliver: SliverList.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return PaymentHistoryCard(transfer: data[index]);
-                },
-              ),
-            );
-          },
-          error: (error, stackTrace) => SliverToBoxAdapter(
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-          ),
-          loading: () => SliverToBoxAdapter(
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-          ),
         );
   }
 }
@@ -359,6 +319,48 @@ class PaymentListHeader extends ConsumerWidget {
   }
 }
 
+//TODO: carrusel package
+//TODO: push notification
+
+class TransfersHistory extends ConsumerWidget {
+  const TransfersHistory({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(transfersProvider).when(
+          skipLoadingOnRefresh: false,
+          data: (data) {
+            return DecoratedSliver(
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border.all(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+              sliver: SliverList.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return PaymentHistoryCard(transfer: data[index]);
+                },
+              ),
+            );
+          },
+          error: (error, stackTrace) => SliverToBoxAdapter(
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+          loading: () => SliverToBoxAdapter(
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+        );
+  }
+}
+
 class PaymentListFooter extends StatelessWidget {
   const PaymentListFooter({
     super.key,
@@ -426,10 +428,25 @@ class Balance extends ConsumerStatefulWidget {
 
 class _BalanceState extends ConsumerState<Balance> {
   bool showBalance = false;
+  bool showNext = true;
   @override
   Widget build(BuildContext context) {
-    //final balance = 0;
     final isLoading = ref.watch(creditProvider).isLoading;
+
+    if (isLoading) {
+      showNext = !showNext;
+    }
+
+    if ((showNext == false) && (showBalance == true)) {
+      showBalance = false;
+      setState(() {});
+    }
+
+    if ((showNext == true) && (showBalance == false)) {
+      showNext = false;
+      setState(() {});
+    }
+
     return Card(
       color: Theme.of(context).scaffoldBackgroundColor,
       elevation: 7,
@@ -441,19 +458,23 @@ class _BalanceState extends ConsumerState<Balance> {
               ? null
               : () {
                   showBalance = !showBalance;
+
                   if (showBalance) {
                     ref.invalidate(creditProvider);
                   }
+                  if (!showBalance) {
+                    showNext = !showNext;
+                  }
                   setState(() {});
                 },
-          icon: showBalance
+          icon: showBalance && showNext
               ? const Icon(Icons.remove_red_eye_outlined)
               : const Icon(Icons.remove_red_eye),
-          label: showBalance
+          label: showBalance && showNext
               ? const Text('Ocultar saldo')
               : const Text('Mostrar saldo'),
         ),
-        trailing: showBalance ? const BalanceField() : null,
+        trailing: showBalance && showNext ? const BalanceField() : null,
       ),
     );
   }
@@ -468,7 +489,10 @@ class BalanceField extends ConsumerWidget {
         skipLoadingOnRefresh: false,
         loading: () => const Padding(
               padding: EdgeInsets.all(1.0),
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(
+                radius: 15,
+                color: Color(0xFF4A1972),
+              ),
             ),
         error: (error, stackTrace) => Text('$error'),
         data: (balance) {

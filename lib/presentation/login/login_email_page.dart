@@ -31,6 +31,8 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
 
   @override
   Widget build(BuildContext context) {
+    var numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    numbers.shuffle();
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -139,8 +141,12 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                     FilledButton.tonalIcon(
                       onPressed: _buttonEnabled
                           ? () {
-                              context.router
-                                  .push(LoginPasswordRoute(email: email.text));
+                              context.router.push(
+                                LoginPasswordRoute(
+                                  email: email.text,
+                                  numbers: numbers,
+                                ),
+                              );
                             }
                           : null,
                       label: Text('Continuar'.toUpperCase()),

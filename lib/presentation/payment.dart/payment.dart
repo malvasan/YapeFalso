@@ -1,11 +1,13 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/domain/transfer.dart';
 
 import 'package:yapefalso/domain/user_metadata.dart';
 import 'package:yapefalso/presentation/payment.dart/payment_controller.dart';
@@ -42,20 +44,21 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
   Widget build(BuildContext context) {
     ref.listen(
       paymentProvider,
-      (_, state) => state.whenData(
+      (stateBefore, state) => state.whenData(
         (data) {
-          context.router
-              .push(ConfirmationRoute(transferData: data, yapeo: true));
+          if (data != null) {
+            context.router
+                .push(ConfirmationRoute(transferData: data, yapeo: true));
+          }
         },
       ),
     );
 
     final paymentProviderState = ref.watch(paymentProvider);
     final isLoading = paymentProviderState.isLoading;
-    final isError = paymentProviderState is AsyncError<int>;
+    final isError = paymentProviderState is AsyncError<Transfer?>;
 
     final userReceiver = ref.watch(userTransferProvider(phone: widget.phone));
-
     return userReceiver.when(
       data: (data) {
         return Stack(children: [
@@ -77,7 +80,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
               color: Colors.black.withAlpha(150),
               child: Center(
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -86,9 +89,15 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Gap(10),
-                      CircularProgressIndicator(),
+                      CupertinoActivityIndicator(
+                        radius: 15,
+                        color: Color(0xFF4A1972),
+                      ),
                       Gap(10),
-                      Text('Yapeando'),
+                      Text(
+                        'Yapeando',
+                        style: TextStyle(fontSize: 17),
+                      ),
                     ],
                   ),
                 ),
@@ -102,32 +111,17 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
               child: Center(
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Gap(10),
-                      const Text(
-                        'Te falta saldo para este yapeo',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                        ),
-                      ),
-                      const Gap(10),
-                      TextButton(
+                  child: CupertinoAlertDialog(
+                    title: const Text('Te falta saldo para este yapeo'),
+                    actions: [
+                      CupertinoDialogAction(
+                        isDefaultAction: true,
                         onPressed: () {
                           ref.invalidate(paymentProvider);
                         },
                         child: const Text(
                           'Entendido',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Color(0xFF2073E8),
-                          ),
+                          style: TextStyle(color: Color(0xFF2073E8)),
                         ),
                       )
                     ],
@@ -169,7 +163,10 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Gap(10),
-                      CircularProgressIndicator(),
+                      CupertinoActivityIndicator(
+                        radius: 15,
+                        color: Color(0xFF4A1972),
+                      ),
                       Gap(10),
                     ],
                   ),
@@ -203,7 +200,6 @@ class PaymentBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
@@ -221,7 +217,6 @@ class PaymentBody extends StatelessWidget {
             Icons.arrow_back,
           ),
         ),
-        //TODO: obtain user name from database
         title: const Text('Yapear a'),
         actions: [
           IconButton(
@@ -396,18 +391,3 @@ class SinglePeriodEnforcer extends TextInputFormatter {
     return oldValue;
   }
 }
-
-// context.router.push(
-                            //   ConfirmationRoute(
-                            //     yapeo: true,
-                            //     transferData: Transfer(
-                            //       id: 0,
-                            //       amount: 0,
-                            //       userNote: '',
-                            //       name: 'name',
-                            //       phoneNumber: 9234,
-                            //       timestamp: DateTime.now(),
-                            //       isPositive: null,
-                            //     ),
-                            //   ),
-                            // );

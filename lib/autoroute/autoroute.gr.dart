@@ -9,6 +9,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i17;
+import 'package:flutter/cupertino.dart' as _i20;
 import 'package:flutter/material.dart' as _i18;
 import 'package:yapefalso/domain/transfer.dart' as _i19;
 import 'package:yapefalso/presentation/confirmation/confirmation.dart' as _i4;
@@ -246,12 +247,14 @@ class LoginEmailRoute extends _i17.PageRouteInfo<void> {
 class LoginPasswordRoute extends _i17.PageRouteInfo<LoginPasswordRouteArgs> {
   LoginPasswordRoute({
     required String email,
-    _i18.Key? key,
+    required List<int> numbers,
+    _i20.Key? key,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           LoginPasswordRoute.name,
           args: LoginPasswordRouteArgs(
             email: email,
+            numbers: numbers,
             key: key,
           ),
           initialChildren: children,
@@ -265,6 +268,7 @@ class LoginPasswordRoute extends _i17.PageRouteInfo<LoginPasswordRouteArgs> {
       final args = data.argsAs<LoginPasswordRouteArgs>();
       return _i10.LoginPasswordPage(
         email: args.email,
+        numbers: args.numbers,
         key: args.key,
       );
     },
@@ -274,16 +278,19 @@ class LoginPasswordRoute extends _i17.PageRouteInfo<LoginPasswordRouteArgs> {
 class LoginPasswordRouteArgs {
   const LoginPasswordRouteArgs({
     required this.email,
+    required this.numbers,
     this.key,
   });
 
   final String email;
 
-  final _i18.Key? key;
+  final List<int> numbers;
+
+  final _i20.Key? key;
 
   @override
   String toString() {
-    return 'LoginPasswordRouteArgs{email: $email, key: $key}';
+    return 'LoginPasswordRouteArgs{email: $email, numbers: $numbers, key: $key}';
   }
 }
 
@@ -310,7 +317,7 @@ class PasswordRegistrationRoute extends _i17.PageRouteInfo<void> {
 /// [_i12.PaymentPage]
 class PaymentRoute extends _i17.PageRouteInfo<PaymentRouteArgs> {
   PaymentRoute({
-    _i18.Key? key,
+    _i20.Key? key,
     required int phone,
     List<_i17.PageRouteInfo>? children,
   }) : super(
@@ -342,7 +349,7 @@ class PaymentRouteArgs {
     required this.phone,
   });
 
-  final _i18.Key? key;
+  final _i20.Key? key;
 
   final int phone;
 

@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -12,13 +11,26 @@ import 'package:yapefalso/presentation/login/sign_in_controller.dart';
 
 @RoutePage()
 class LoginPasswordPage extends ConsumerWidget {
-  const LoginPasswordPage({required this.email, super.key});
+  const LoginPasswordPage(
+      {required this.email, required this.numbers, super.key});
   final String email;
+  final List<int> numbers;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //final isLoading = ref.watch(signInProvider).isLoading;
+    ref.listen(
+      authenticationStateProvider,
+      (_, state) => state.whenOrNull(
+        data: (data) {
+          final event = data.event;
 
+          if (event == AuthChangeEvent.signedIn) {
+            context.router.push(const PaymentsRoute());
+          }
+        },
+      ),
+    );
     final signInProviderState = ref.watch(signInProvider);
     final isLoading = signInProviderState.isLoading;
     final isError = signInProviderState is AsyncError<void>;
@@ -57,7 +69,12 @@ class LoginPasswordPage extends ConsumerWidget {
                 ),
               ),
             ),
-            Flexible(flex: 2, child: PasswordSection(email: email)),
+            Flexible(
+                flex: 2,
+                child: PasswordSection(
+                  email: email,
+                  numbers: numbers,
+                )),
           ],
         ),
       ),
@@ -76,7 +93,10 @@ class LoginPasswordPage extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Gap(10),
-                  CircularProgressIndicator(),
+                  CupertinoActivityIndicator(
+                    radius: 15,
+                    color: Color(0xFF4A1972),
+                  ),
                   Gap(10),
                   Text('Validando datos'),
                 ],
@@ -118,6 +138,7 @@ class LoginPasswordPage extends ConsumerWidget {
                   const Gap(10),
                   TextButton(
                     onPressed: () {
+                      ref.read(passwordProvider).clear();
                       ref.invalidate(signInProvider);
                     },
                     child: const Text(
@@ -154,9 +175,10 @@ class LoginPasswordPage extends ConsumerWidget {
 }
 
 class PasswordSection extends StatelessWidget {
-  const PasswordSection({required this.email, super.key});
+  const PasswordSection(
+      {required this.email, required this.numbers, super.key});
   final String email;
-
+  final List<int> numbers;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -179,7 +201,10 @@ class PasswordSection extends StatelessWidget {
           const Gap(20),
           Expanded(
             flex: 9,
-            child: NumericPad(email: email),
+            child: NumericPad(
+              email: email,
+              numbers: numbers,
+            ),
           ),
         ],
       ),
@@ -193,24 +218,6 @@ class PasswordField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(
-      authenticationStateProvider,
-      (_, state) => state.whenOrNull(
-        error: (error, stackTrace) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.toString())),
-          );
-        },
-        data: (data) {
-          final event = data.event;
-
-          if (event == AuthChangeEvent.signedIn) {
-            context.router.push(const PaymentsRoute());
-          }
-        },
-      ),
-    );
-
     final password = ref.watch(passwordProvider);
 
     if (password.isEmpty) {
@@ -265,8 +272,7 @@ class HiddenPassword extends ConsumerWidget {
 
 //TODO: can be sorted like the real app
 class NumericPad extends ConsumerWidget {
-  const NumericPad({super.key, required this.email})
-      : numbers = const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const NumericPad({super.key, required this.email, required this.numbers});
 
   final List<int> numbers;
   final String email;
@@ -275,15 +281,15 @@ class NumericPad extends ConsumerWidget {
     return Column(
       children: [
         RowNumber(
-          numbers: const [1, 2, 3],
+          numbers: [numbers[0], numbers[1], numbers[2]],
           email: email,
         ),
         RowNumber(
-          numbers: const [4, 5, 6],
+          numbers: [numbers[3], numbers[4], numbers[5]],
           email: email,
         ),
         RowNumber(
-          numbers: const [7, 8, 9],
+          numbers: [numbers[6], numbers[7], numbers[8]],
           email: email,
         ),
         Expanded(
@@ -294,7 +300,7 @@ class NumericPad extends ConsumerWidget {
                   child: IconButton(
                       onPressed: () {}, icon: const Icon(Icons.fingerprint))),
               NumberButton(
-                value: 0,
+                value: numbers[9],
                 email: email,
               ),
               Expanded(

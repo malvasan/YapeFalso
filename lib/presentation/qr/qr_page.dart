@@ -38,6 +38,7 @@ class _CameraPageState extends State<CameraPage> {
     _initialize();
   }
 
+//try-catch
   void _initialize() async {
     if (_cameras.isEmpty) {
       _cameras = await availableCameras();
@@ -141,6 +142,7 @@ class _CameraPageState extends State<CameraPage> {
     //   home: CameraPreview(_controller!),
     // );
     final size = MediaQuery.of(context).size;
+    //TODO: image picker
     return Scaffold(
       body: ColoredBox(
           color: Colors.black,

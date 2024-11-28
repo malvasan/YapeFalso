@@ -27,6 +27,10 @@ class Password extends _$Password {
     ];
   }
 
+  void clear() {
+    state = [];
+  }
+
   String parseList() {
     var password = '';
     for (var value = 0; value < state.length; value++) {
