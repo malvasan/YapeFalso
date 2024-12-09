@@ -3,34 +3,75 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/data/auth.dart';
+import 'package:yapefalso/data/messaging.dart';
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
 import 'package:yapefalso/presentation/login/login_password_controller.dart';
 import 'package:yapefalso/presentation/login/sign_in_controller.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 @RoutePage()
-class LoginPasswordPage extends ConsumerWidget {
+class LoginPasswordPage extends ConsumerStatefulWidget {
   const LoginPasswordPage(
       {required this.email, required this.numbers, super.key});
   final String email;
   final List<int> numbers;
+  @override
+  ConsumerState<LoginPasswordPage> createState() => _LoginPasswordPageState();
+}
+
+class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
+  String qr = '';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    _loadQR();
+  }
+
+  Future<void> _loadQR() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      qr = prefs.getString('qr') ?? '';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     //final isLoading = ref.watch(signInProvider).isLoading;
+
+    final messaging = ref.read(messagingProvider);
+    final auth = ref.read(authenticationProvider);
+
     ref.listen(
       authenticationStateProvider,
       (_, state) => state.whenOrNull(
-        data: (data) {
+        data: (data) async {
           final event = data.event;
 
           if (event == AuthChangeEvent.signedIn) {
-            context.router.push(const PaymentsRoute());
+            final fcmToken = await messaging.getToken();
+
+            if (fcmToken != null) {
+              await auth.setFcmToken(fcmToken);
+            }
+            if (context.mounted) {
+              context.router.push(const PaymentsRoute());
+            }
           }
         },
       ),
     );
+
+    messaging.firebaseMessaging.onTokenRefresh.listen(
+      (fcmToken) async {
+        await auth.setFcmToken(fcmToken);
+      },
+    );
+
     final signInProviderState = ref.watch(signInProvider);
     final isLoading = signInProviderState.isLoading;
     final isError = signInProviderState is AsyncError<void>;
@@ -65,15 +106,15 @@ class LoginPasswordPage extends ConsumerWidget {
                   ),
                 ),
                 child: Center(
-                  child: Text('QR'),
+                  child: qr.isEmpty ? Text('QR') : QrImageView(data: qr),
                 ),
               ),
             ),
             Flexible(
                 flex: 2,
                 child: PasswordSection(
-                  email: email,
-                  numbers: numbers,
+                  email: widget.email,
+                  numbers: widget.numbers,
                 )),
           ],
         ),

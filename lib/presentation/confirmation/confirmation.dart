@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
@@ -9,17 +10,25 @@ import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/presentation/payments_history/transfers_controller.dart';
 import 'package:yapefalso/presentation/payments_history/user_credit_controller.dart';
 import 'package:yapefalso/utils.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:path_provider/path_provider.dart';
 
 @RoutePage()
-class ConfirmationPage extends ConsumerWidget {
+class ConfirmationPage extends ConsumerStatefulWidget {
   const ConfirmationPage(
       {required this.yapeo, super.key, required this.transferData});
-
   final Transfer transferData;
   final bool yapeo;
-  //TODO: screenshot when share
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConfirmationPage> createState() => _ConfirmationPageState();
+}
+
+class _ConfirmationPageState extends ConsumerState<ConfirmationPage> {
+  //TODO: screenshot when share
+  ScreenshotController screenshotController = ScreenshotController();
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -36,376 +45,200 @@ class ConfirmationPage extends ConsumerWidget {
           ),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.01, 0.2],
-            colors: [
-              const Color(0xFF4A1972),
-              Theme.of(context).primaryColor,
-            ],
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Gap(10),
-              Icon(
-                Icons.check,
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-              const Gap(10),
-              Container(
-                margin: const EdgeInsets.all(45),
-                child: CustomPaint(
-                  painter: PathPainter(),
-                  child: Column(
-                    children: [
-                      const Gap(20),
-                      Text(
-                        transferData.isPositive
-                            ? '¡Te Yapearon!'
-                            : '¡Yapeaste!',
-                        style: TextStyle(
-                          fontSize: 25.0,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: Column(
-                              children: [
-                                Text(
-                                  'S/',
-                                  style: TextStyle(
-                                    color: Theme.of(context).disabledColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 25,
-                                  ),
-                                ),
-                                const Gap(20),
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                            flex: 6,
-                            child: Text(
-                              transferData.amount.toString(),
-                              style: TextStyle(
-                                fontSize: 55.0,
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Gap(20),
-                      Text(
-                        transferData.name,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        convertToYapeFormat(transferData.createdAt),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                      const Gap(20),
-                      if (transferData.userNote != null)
-                        if (transferData.userNote!.isNotEmpty) ...[
-                          const Divider(),
-                          const Gap(5),
-                          RichText(
-                            text: TextSpan(
-                                style: TextStyle(
-                                  color: Theme.of(context).disabledColor,
-                                  fontSize: 15,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: transferData.userNote,
-                                    style: const TextStyle(color: Colors.black),
-                                  )
-                                ]),
-                          ),
-                          const Gap(4),
-                        ],
-                      const Divider(),
-                      const Gap(8),
-                      RichText(
-                        text: TextSpan(
-                            style: TextStyle(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15,
-                            ),
-                            children: [
-                              const TextSpan(
-                                text: 'N de celular: ',
-                              ),
-                              TextSpan(
-                                text: transferData.phoneNumber.toString(),
-                                style: const TextStyle(color: Colors.black),
-                              )
-                            ]),
-                      ),
-                      const Gap(7),
-                      const Divider(),
-                      const Gap(7),
-                      RichText(
-                        text: TextSpan(
-                            style: TextStyle(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15,
-                            ),
-                            children: const [
-                              TextSpan(
-                                text: 'Destino: ',
-                              ),
-                              TextSpan(
-                                text: 'Yape',
-                                style: TextStyle(color: Colors.black),
-                              )
-                            ]),
-                      ),
-                      const Gap(7),
-                      const Divider(),
-                      const Gap(7),
-                      RichText(
-                        text: TextSpan(
-                            style: TextStyle(
-                              color: Theme.of(context).disabledColor,
-                              fontSize: 15,
-                            ),
-                            children: [
-                              const TextSpan(
-                                text: 'N de operación: ',
-                              ),
-                              TextSpan(
-                                text: transferData.id.toString(),
-                                style: const TextStyle(color: Colors.black),
-                              )
-                            ]),
-                      ),
-                      const Gap(7),
-                      const Divider(),
-                      const Gap(50),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Screenshot(
+              controller: screenshotController,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.01, 0.2],
+                    colors: [
+                      const Color(0xFF4A1972),
+                      Theme.of(context).primaryColor,
                     ],
                   ),
                 ),
-              ),
-              if (!yapeo)
-                FooterButtonsHistory(
-                  phone: transferData.phoneNumber,
-                ),
-              if (yapeo) ...[
-                const FooterButtonsConfirmation(),
-                const Card(
-                  margin: EdgeInsets.fromLTRB(45, 30, 45, 0),
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        Row(
+                child: Column(
+                  children: [
+                    const Gap(10),
+                    Icon(
+                      Icons.check,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    const Gap(10),
+                    Container(
+                      margin: const EdgeInsets.all(45),
+                      child: CustomPaint(
+                        painter: PathPainter(),
+                        child: Column(
                           children: [
+                            const Gap(20),
                             Text(
-                              'Más en Yape',
+                              widget.transferData.isPositive
+                                  ? '¡Te Yapearon!'
+                                  : '¡Yapeaste!',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17),
+                                fontSize: 25.0,
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                            Card(
-                              color: Colors.amber,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.elliptical(5, 5)),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Text(
-                                  'Nuevo',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Card(
-                          color: Colors.yellow,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                            const Gap(10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  flex: 5,
+                                  child: Column(
                                     children: [
-                                      Card(
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(7, 4, 7, 4),
-                                          child: Text(
-                                            'Yape Tienda',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 10,
-                                            ),
-                                          ),
+                                      Text(
+                                        'S/',
+                                        style: TextStyle(
+                                          color:
+                                              Theme.of(context).disabledColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 25,
                                         ),
                                       ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(4, 2, 0, 0),
-                                        child: Text(
-                                          'Hasta 50% dcto',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(4, 0, 0, 6),
-                                        child: Text(
-                                          'en Tecnología aquí',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
+                                      const Gap(20),
                                     ],
                                   ),
-                                  Gap(15),
-                                  Icon(
-                                    Icons.phone_missed_rounded,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 2,
-                              child: Card(
-                                color: Colors.cyan,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Card(
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    7, 4, 7, 4),
-                                                child: Text(
-                                                  'Pago de Servicios',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w900,
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  4, 2, 0, 0),
-                                              child: Text(
-                                                'Paga tus recibos',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  4, 0, 0, 6),
-                                              child: Text(
-                                                'sin colas',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w800,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Gap(15),
-                                        Icon(
-                                          Icons.phone_missed_rounded,
-                                        ),
-                                        Gap(15),
-                                      ],
-                                    ),
-                                  ],
                                 ),
+                                Flexible(
+                                  flex: 6,
+                                  child: Text(
+                                    widget.transferData.amount.toString(),
+                                    style: TextStyle(
+                                      fontSize: 55.0,
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(20),
+                            Text(
+                              widget.transferData.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            Flexible(
-                              flex: 1,
-                              child: Card(
-                                color: Colors.cyan,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Card(
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    7, 4, 7, 4),
-                                                child: Text(
-                                                  'Dinero más\nseguro',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w900,
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Gap(4),
-                                    Icon(
-                                      Icons.phone_missed_rounded,
-                                    ),
-                                  ],
-                                ),
+                            Text(
+                              convertToYapeFormat(
+                                  widget.transferData.createdAt),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w300,
                               ),
-                            )
+                            ),
+                            const Gap(20),
+                            if (widget.transferData.userNote != null)
+                              if (widget.transferData.userNote!.isNotEmpty) ...[
+                                const Divider(),
+                                const Gap(5),
+                                RichText(
+                                  text: TextSpan(
+                                      style: TextStyle(
+                                        color: Theme.of(context).disabledColor,
+                                        fontSize: 15,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: widget.transferData.userNote,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        )
+                                      ]),
+                                ),
+                                const Gap(4),
+                              ],
+                            const Divider(),
+                            const Gap(8),
+                            RichText(
+                              text: TextSpan(
+                                  style: TextStyle(
+                                    color: Theme.of(context).disabledColor,
+                                    fontSize: 15,
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                      text: 'N de celular: ',
+                                    ),
+                                    TextSpan(
+                                      text: widget.transferData.phoneNumber
+                                          .toString(),
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    )
+                                  ]),
+                            ),
+                            const Gap(7),
+                            const Divider(),
+                            const Gap(7),
+                            RichText(
+                              text: TextSpan(
+                                  style: TextStyle(
+                                    color: Theme.of(context).disabledColor,
+                                    fontSize: 15,
+                                  ),
+                                  children: const [
+                                    TextSpan(
+                                      text: 'Destino: ',
+                                    ),
+                                    TextSpan(
+                                      text: 'Yape',
+                                      style: TextStyle(color: Colors.black),
+                                    )
+                                  ]),
+                            ),
+                            const Gap(7),
+                            const Divider(),
+                            const Gap(7),
+                            RichText(
+                              text: TextSpan(
+                                  style: TextStyle(
+                                    color: Theme.of(context).disabledColor,
+                                    fontSize: 15,
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                      text: 'N de operación: ',
+                                    ),
+                                    TextSpan(
+                                      text: widget.transferData.id.toString(),
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    )
+                                  ]),
+                            ),
+                            const Gap(7),
+                            const Divider(),
+                            const Gap(50),
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ]
-            ],
-          ),
+              ),
+            ),
+            if (!widget.yapeo)
+              FooterButtonsHistory(
+                phone: widget.transferData.phoneNumber,
+                screenshotController: screenshotController,
+              ),
+            if (widget.yapeo) ...[
+              FooterButtonsConfirmation(
+                screenshotController: screenshotController,
+              ),
+              const AdvertisingApp(),
+            ]
+          ],
         ),
       ),
     );
@@ -416,10 +249,11 @@ class FooterButtonsHistory extends StatelessWidget {
   const FooterButtonsHistory({
     super.key,
     required this.phone,
+    required this.screenshotController,
   });
 
   final int phone;
-
+  final ScreenshotController screenshotController;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -428,7 +262,20 @@ class FooterButtonsHistory extends StatelessWidget {
         Column(
           children: [
             IconButton.filled(
-              onPressed: () {},
+              onPressed: () async {
+                await screenshotController
+                    .capture(delay: const Duration(milliseconds: 10))
+                    .then((image) async {
+                  if (image != null) {
+                    final directory = await getApplicationDocumentsDirectory();
+                    final imagePath =
+                        await File('${directory.path}/image.png').create();
+                    await imagePath.writeAsBytes(image);
+
+                    await Share.shareXFiles([XFile(imagePath.path)]);
+                  }
+                });
+              },
               icon: const Icon(
                 Icons.share_sharp,
                 size: 32,
@@ -494,8 +341,9 @@ class FooterButtonsHistory extends StatelessWidget {
 class FooterButtonsConfirmation extends ConsumerWidget {
   const FooterButtonsConfirmation({
     super.key,
+    required this.screenshotController,
   });
-
+  final ScreenshotController screenshotController;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
@@ -504,7 +352,20 @@ class FooterButtonsConfirmation extends ConsumerWidget {
         Column(
           children: [
             IconButton.filled(
-              onPressed: () {},
+              onPressed: () async {
+                await screenshotController
+                    .capture(delay: const Duration(milliseconds: 10))
+                    .then((image) async {
+                  if (image != null) {
+                    final directory = await getApplicationDocumentsDirectory();
+                    final imagePath =
+                        await File('${directory.path}/image.png').create();
+                    await imagePath.writeAsBytes(image);
+
+                    await Share.shareXFiles([XFile(imagePath.path)]);
+                  }
+                });
+              },
               icon: const Icon(
                 Icons.share_sharp,
                 size: 32,
@@ -690,4 +551,198 @@ class PathPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+class AdvertisingApp extends StatelessWidget {
+  const AdvertisingApp({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Card(
+      margin: EdgeInsets.fromLTRB(45, 30, 45, 0),
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Más en Yape',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+                Card(
+                  color: Colors.amber,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Text(
+                      'Nuevo',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Card(
+              color: Colors.yellow,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Card(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                              child: Text(
+                                'Yape Tienda',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(4, 2, 0, 0),
+                            child: Text(
+                              'Hasta 50% dcto',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(4, 0, 0, 6),
+                            child: Text(
+                              'en Tecnología aquí',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Gap(15),
+                      Icon(
+                        Icons.phone_missed_rounded,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Card(
+                    color: Colors.cyan,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Card(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                                    child: Text(
+                                      'Pago de Servicios',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(4, 2, 0, 0),
+                                  child: Text(
+                                    'Paga tus recibos',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(4, 0, 0, 6),
+                                  child: Text(
+                                    'sin colas',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Gap(15),
+                            Icon(
+                              Icons.phone_missed_rounded,
+                            ),
+                            Gap(15),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Card(
+                    color: Colors.cyan,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Card(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                                    child: Text(
+                                      'Dinero más\nseguro',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Gap(4),
+                        Icon(
+                          Icons.phone_missed_rounded,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +9,31 @@ import 'package:yapefalso/presentation/payments_history/transfers_controller.dar
 import 'package:yapefalso/presentation/payments_history/user_controller.dart';
 import 'package:yapefalso/presentation/payments_history/user_credit_controller.dart';
 import 'package:yapefalso/utils.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 @RoutePage()
-class PaymentsPage extends ConsumerWidget {
+class PaymentsPage extends ConsumerStatefulWidget {
   const PaymentsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PaymentsPage> createState() => _PaymentsPageState();
+}
+
+class _PaymentsPageState extends ConsumerState<PaymentsPage> {
+  @override
+  Widget build(BuildContext context) {
     final isLoading = ref.watch(userProvider).isLoading;
+    ref.listen(
+      userProvider,
+      (_, state) => state.whenData(
+        (value) async {
+          saveUser(
+            number: value.phoneNumber,
+            email: value.email,
+          );
+        },
+      ),
+    );
 
     return ref.watch(userProvider).when(
           skipLoadingOnRefresh: false,
@@ -65,22 +80,7 @@ class PaymentsPage extends ConsumerWidget {
                           CustomSliverGrid(minExtent: 210, maxExtent: 210),
                     ),
                     SliverToBoxAdapter(
-                      child: Container(
-                        color: const Color(0xFF4A1972),
-                        child: Column(
-                          children: [
-                            Card(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              child: const ListTile(
-                                leading: Icon(Icons.access_alarm_rounded),
-                                title: Text('Main information'),
-                                subtitle: Text('Extra information'),
-                              ),
-                            ),
-                            const Gap(10),
-                          ],
-                        ),
-                      ),
+                      child: CustomCarousel(),
                     ),
                     SliverToBoxAdapter(
                       child: Container(
@@ -205,6 +205,153 @@ class PaymentsPage extends ConsumerWidget {
   }
 }
 
+class CustomCarousel extends StatefulWidget {
+  const CustomCarousel({super.key});
+
+  @override
+  State<CustomCarousel> createState() => _CustomCarouselState();
+}
+
+class _CustomCarouselState extends State<CustomCarousel>
+    with TickerProviderStateMixin {
+  int _current = 0;
+  final CarouselSliderController _controller = CarouselSliderController();
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 4000),
+    )..addListener(() {
+        setState(() {});
+      });
+    controller.repeat();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF4A1972),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CarouselSlider.builder(
+            itemCount: 5,
+            carouselController: _controller,
+            itemBuilder: (context, index, realIndex) {
+              return Card(
+                margin: EdgeInsets.fromLTRB(15, 0, 15, 4),
+                color: Color(0xFFF0E0FD),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 5, 5, 5),
+                          child: Card(
+                            color: Colors.purple,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                              child: Text(
+                                'Tienda',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(4, 2, 0, 0),
+                          child: Text(
+                            'Hasta 50% dcto',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(4, 0, 0, 6),
+                          child: Text(
+                            'en Tecnología aquí',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Gap(15),
+                    Icon(
+                      Icons.phone_missed_rounded,
+                    ),
+                  ],
+                ),
+              );
+            },
+            options: CarouselOptions(
+              autoPlayInterval: Duration(seconds: 4),
+              autoPlay: true,
+              enlargeCenterPage: false,
+              aspectRatio: 2.5,
+              padEnds: false,
+              viewportFraction: 0.75,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                  controller.forward(from: 0);
+                  controller.repeat();
+                });
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List<int>.generate(5, (int index) => index * index,
+                    growable: false)
+                .asMap()
+                .entries
+                .map(
+              (entry) {
+                return GestureDetector(
+                  onTap: () => _controller.animateToPage(entry.key),
+                  child: Container(
+                    width: _current == entry.key ? 30.0 : 8.0,
+                    height: 8.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _current == entry.key
+                            ? Colors.white
+                            : Theme.of(context).primaryColor),
+                    child: _current == entry.key
+                        ? LinearProgressIndicator(
+                            value: controller.value,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          )
+                        : null,
+                  ),
+                );
+              },
+            ).toList(),
+          ),
+          Gap(4),
+        ],
+      ),
+    );
+  }
+}
+
 class CustomSliverGrid extends SliverPersistentHeaderDelegate {
   const CustomSliverGrid({
     required this.minExtent,
@@ -260,9 +407,6 @@ class PaymentListHeader extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border.all(
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
@@ -282,7 +426,7 @@ class PaymentListHeader extends ConsumerWidget {
                     'Movimientos',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                       fontSize: 20,
                     ),
                   )),
@@ -335,9 +479,6 @@ class TransfersHistory extends ConsumerWidget {
             return DecoratedSliver(
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                border: Border.all(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
               ),
               sliver: SliverList.builder(
                 itemCount: data.length,

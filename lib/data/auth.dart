@@ -46,6 +46,16 @@ class Auth {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> setFcmToken(String fcmToken) async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId != null) {
+      await Supabase.instance.client.from('profiles').upsert({
+        'id': userId,
+        'fcm_token': fcmToken,
+      });
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)

@@ -3,11 +3,17 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
+import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/utils.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 @RoutePage()
 class CameraPage extends StatefulWidget {
@@ -20,10 +26,14 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   static List<CameraDescription> _cameras = [];
   CameraController? _controller;
+  ImagePicker? _imagePicker;
   int _cameraIndex = -1;
   bool _canProcess = true;
   bool _isBusy = false;
   bool _isValidQR = false;
+  bool _cameraFlash = false;
+  File? _image;
+  String? _path;
   final _orientations = {
     DeviceOrientation.portraitUp: 0,
     DeviceOrientation.landscapeLeft: 90,
@@ -34,7 +44,6 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
-
     _initialize();
   }
 
@@ -142,7 +151,7 @@ class _CameraPageState extends State<CameraPage> {
     //   home: CameraPreview(_controller!),
     // );
     final size = MediaQuery.of(context).size;
-    //TODO: image picker
+
     return Scaffold(
       body: ColoredBox(
           color: Colors.black,
@@ -172,21 +181,67 @@ class _CameraPageState extends State<CameraPage> {
               ),
             ),
             Positioned(
-                top: (size.height / 2) + (size.width / 4) + 10,
-                left: (size.width / 4),
-                child: SizedBox(
-                  height: 50,
-                  width: size.width / 2,
-                  child: const Text(
-                    'Escanea un QR con tu cámara',
-                    style: TextStyle(color: Colors.white),
+              top: (size.height / 2) + (size.width / 4) + 10,
+              left: (size.width / 4),
+              child: SizedBox(
+                height: 50,
+                width: size.width / 2,
+                child: const Text(
+                  'Escanea un QR con tu cámara',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () {
+                    if (!_cameraFlash) {
+                      _controller!.setFlashMode(FlashMode.torch);
+                    } else {
+                      _controller!.setFlashMode(FlashMode.off);
+                    }
+                    _cameraFlash = !_cameraFlash;
+                    setState(() {});
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white24,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
+                    ),
+                    side: const BorderSide(width: 0),
                   ),
-                ))
+                  child: Text(
+                    _cameraFlash ? 'Apagar Linterna' : 'Encender Linterna',
+                    style: TextStyle(
+                        color: Theme.of(context).scaffoldBackgroundColor),
+                  ),
+                ),
+                const Gap(30),
+                Card(
+                  margin: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.image_search_outlined,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    title: const Text('Subir una image con QR'),
+                    onTap: () {
+                      _getImage(ImageSource.gallery);
+                    },
+                  ),
+                ),
+                const Gap(20),
+              ],
+            ),
           ])),
     );
   }
 
   //YP-USERID
+  //YP-974578579
   //YP-numero de telefono
   //expresiones regulares( verificar qr)
   //numeros unicos asociados
@@ -251,6 +306,7 @@ class _CameraPageState extends State<CameraPage> {
     ));
     if (temp != null) {
       _isValidQR = temp;
+      _cameraFlash = temp;
     }
   }
 
@@ -365,6 +421,55 @@ class _CameraPageState extends State<CameraPage> {
         bytesPerRow: plane.bytesPerRow, // used only in iOS
       ),
     );
+  }
+
+  Future _getImage(ImageSource source) async {
+    setState(() {
+      _image = null;
+      _path = null;
+    });
+
+    _imagePicker = ImagePicker();
+    final pickedFile = await _imagePicker!
+        .pickImage(source: source, maxHeight: 1080, maxWidth: 2248);
+
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+
+      _path = pickedFile.path;
+
+      final inputImage = InputImage.fromFilePath(pickedFile.path);
+
+      _isBusy = false;
+      if (!_canProcess) return;
+      if (_isBusy) return;
+
+      _isBusy = true;
+
+      final barcodeScanner = BarcodeScanner();
+      final barcodes = await barcodeScanner.processImage(inputImage);
+
+      //vission detector view
+      //barcode scanner, camera view
+      var firstQR = false;
+      for (Barcode barcode in barcodes) {
+        if (barcode.format != BarcodeFormat.qrCode) continue;
+        if (firstQR) continue;
+        // final BarcodeType type = barcode.type;
+        // final Rect boundingBox = barcode.boundingBox;
+        // final String? displayValue = barcode.displayValue;
+        final String? rawValue = barcode.rawValue;
+
+        final validFormat = RegExp(r'^(YP-)\d{9}');
+        if (validFormat.hasMatch(rawValue ?? '')) {
+          changePage(barcode.displayValue);
+        }
+      }
+      _isBusy = false;
+      if (mounted) {
+        setState(() {});
+      }
+    }
   }
 }
 

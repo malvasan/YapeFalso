@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/data/auth.dart';
+import 'package:yapefalso/data/messaging.dart';
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
 import 'package:yapefalso/presentation/registration/sign_up_controller.dart';
 import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
@@ -61,19 +63,34 @@ class _DebitCardRegistrtationState
 
   @override
   Widget build(BuildContext context) {
+    final messaging = ref.read(messagingProvider);
+    final auth = ref.read(authenticationProvider);
+    final isLoading = ref.watch(signUpProvider).isLoading;
+
     ref.listen(
       authenticationStateProvider,
       (_, state) => state.whenData(
-        (data) {
+        (data) async {
           final event = data.event;
           if (event == AuthChangeEvent.signedIn) {
-            context.router.push(const RegistrationConfirmationRoute());
+            final fcmToken = await messaging.getToken();
+
+            if (fcmToken != null) {
+              await auth.setFcmToken(fcmToken);
+            }
+            if (context.mounted) {
+              context.router.push(const RegistrationConfirmationRoute());
+            }
           }
         },
       ),
     );
 
-    final isLoading = ref.watch(signUpProvider).isLoading;
+    messaging.firebaseMessaging.onTokenRefresh.listen(
+      (fcmToken) async {
+        await auth.setFcmToken(fcmToken);
+      },
+    );
 
     return Stack(children: [
       Form(

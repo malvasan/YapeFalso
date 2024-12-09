@@ -154,8 +154,7 @@ class DataBaseRepository {
               'id, createdAt:created_at, amount, userNote:user_note, from:receiver_id(id, name, phoneNumber:phone_number), to:provider_id(id, name, phoneNumber:phone_number)')
           .gte('created_at', date.toIso8601String())
           .or('receiver_id.eq.${user.id},provider_id.eq.${user.id}')
-          .order('created_at', ascending: true)
-          .limit(7);
+          .order('created_at', ascending: false);
 
       var transfersList = <Transfer>[];
       for (var value in response) {

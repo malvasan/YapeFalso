@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "24351053801",
+    "project_id": "second-wisy-project",
+    "storage_bucket": "second-wisy-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24351053801:android:93a4ad6abf7a7e293d5d78",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH8wFUQhHBzgjYX-SFI8OVdMPIuAutltQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

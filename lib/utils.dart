@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yapefalso/domain/transfer.dart';
 
 enum Months { en, feb, mar, abr, may, jun, jul, ag, set, oct, nov, dic }
@@ -82,4 +83,10 @@ List<List<Transfer>> separateTransfers(List<Transfer> data) {
     }
   }
   return separateList;
+}
+
+Future<bool> saveUser({required int number, required String email}) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('email', email);
+  return await prefs.setString('qr', number.toString());
 }
