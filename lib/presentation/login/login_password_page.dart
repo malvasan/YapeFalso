@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 import 'package:yapefalso/data/messaging.dart';
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
@@ -59,7 +60,7 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
               await auth.setFcmToken(fcmToken);
             }
             if (context.mounted) {
-              context.router.push(const PaymentsRoute());
+              ref.read(autorouteProvider).push(const PaymentsRoute());
             }
           }
         },
@@ -82,7 +83,7 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
-            onPressed: () => context.router.maybePop(),
+            onPressed: () => ref.read(autorouteProvider).maybePop(),
             icon: Icon(
               Icons.arrow_back,
               color: Theme.of(context).scaffoldBackgroundColor,

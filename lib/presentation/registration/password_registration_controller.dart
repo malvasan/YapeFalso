@@ -1,4 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 part 'password_registration_controller.g.dart';
 
@@ -11,7 +13,7 @@ class PasswordCreation extends _$PasswordCreation {
 
   void increment(int value) {
     if (length >= 6) {
-      return;
+      ref.read(autorouteProvider).push(const AccountTypeSelectionRoute());
     }
     state = [...state, value];
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
 
 @RoutePage()
@@ -127,7 +128,9 @@ class _PhoneRegistrationPageState extends ConsumerState<PhoneRegistrationPage> {
                   ref
                       .read(userRegistrationDataProvider.notifier)
                       .updatePhoneNumber(int.parse(phone.text));
-                  context.router
+
+                  ref
+                      .read(autorouteProvider)
                       .push(const PersonalInformationRegistrationRoute());
                 }
               : null,

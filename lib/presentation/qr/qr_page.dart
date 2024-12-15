@@ -1,29 +1,28 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
-import 'package:exif/exif.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/utils.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_picker_android/image_picker_android.dart';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 @RoutePage()
-class CameraPage extends StatefulWidget {
+class CameraPage extends ConsumerStatefulWidget {
   const CameraPage({super.key});
 
   @override
-  State<CameraPage> createState() => _CameraPageState();
+  ConsumerState<CameraPage> createState() => _CameraPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _CameraPageState extends ConsumerState<CameraPage> {
   static List<CameraDescription> _cameras = [];
   CameraController? _controller;
   ImagePicker? _imagePicker;
@@ -32,8 +31,7 @@ class _CameraPageState extends State<CameraPage> {
   bool _isBusy = false;
   bool _isValidQR = false;
   bool _cameraFlash = false;
-  File? _image;
-  String? _path;
+
   final _orientations = {
     DeviceOrientation.portraitUp: 0,
     DeviceOrientation.landscapeLeft: 90,
@@ -171,7 +169,7 @@ class _CameraPageState extends State<CameraPage> {
                 width: 50.0,
                 height: 50.0,
                 child: IconButton(
-                  onPressed: () => context.router.maybePop(),
+                  onPressed: () => ref.read(autorouteProvider).maybePop(),
                   icon: const Icon(
                     Icons.close,
                     size: 30,
@@ -286,7 +284,7 @@ class _CameraPageState extends State<CameraPage> {
         final validFormat = RegExp(r'^(YP-)\d{9}');
         if (validFormat.hasMatch(rawValue ?? '')) {
           _isValidQR = true;
-          changePage(barcode.displayValue);
+          changePage(barcode.displayValue, ref);
         }
       }
     }
@@ -296,14 +294,14 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  void changePage(String? phone) async {
+  void changePage(String? phone, WidgetRef ref) async {
     if (phone == null) {
       return;
     }
 
-    var temp = await context.router.push<bool>(PaymentRoute(
-      phone: int.parse(phone.replaceAll('YP-', '')),
-    ));
+    var temp = await ref.read(autorouteProvider).push<bool>(PaymentRoute(
+          phone: int.parse(phone.replaceAll('YP-', '')),
+        ));
     if (temp != null) {
       _isValidQR = temp;
       _cameraFlash = temp;
@@ -424,20 +422,11 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future _getImage(ImageSource source) async {
-    setState(() {
-      _image = null;
-      _path = null;
-    });
-
     _imagePicker = ImagePicker();
     final pickedFile = await _imagePicker!
         .pickImage(source: source, maxHeight: 1080, maxWidth: 2248);
 
     if (pickedFile != null) {
-      _image = File(pickedFile.path);
-
-      _path = pickedFile.path;
-
       final inputImage = InputImage.fromFilePath(pickedFile.path);
 
       _isBusy = false;
@@ -451,10 +440,10 @@ class _CameraPageState extends State<CameraPage> {
 
       //vission detector view
       //barcode scanner, camera view
-      var firstQR = false;
+
       for (Barcode barcode in barcodes) {
         if (barcode.format != BarcodeFormat.qrCode) continue;
-        if (firstQR) continue;
+
         // final BarcodeType type = barcode.type;
         // final Rect boundingBox = barcode.boundingBox;
         // final String? displayValue = barcode.displayValue;
@@ -462,7 +451,7 @@ class _CameraPageState extends State<CameraPage> {
 
         final validFormat = RegExp(r'^(YP-)\d{9}');
         if (validFormat.hasMatch(rawValue ?? '')) {
-          changePage(barcode.displayValue);
+          changePage(barcode.displayValue, ref);
         }
       }
       _isBusy = false;

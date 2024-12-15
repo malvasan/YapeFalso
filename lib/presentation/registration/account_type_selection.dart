@@ -1,14 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 @RoutePage()
-class AccountTypeSelectionPage extends StatelessWidget {
+class AccountTypeSelectionPage extends ConsumerWidget {
   const AccountTypeSelectionPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -54,8 +56,9 @@ class AccountTypeSelectionPage extends StatelessWidget {
                             const Text('Cuenta corriente o ahorro en\nsoles.'),
                         subtitleTextStyle:
                             TextStyle(color: Theme.of(context).disabledColor),
-                        onTap: () =>
-                            context.router.push(const DebitCardRegistrtation()),
+                        onTap: () => ref
+                            .read(autorouteProvider)
+                            .push(const DebitCardRegistrtation()),
                       ),
                       const Gap(20),
                       ListTile(

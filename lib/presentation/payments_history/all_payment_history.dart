@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/presentation/payments_history/all_transfers_controller.dart';
 import 'package:yapefalso/utils.dart';
@@ -35,7 +36,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
             backgroundColor: Theme.of(context).primaryColor,
             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconButton(
-              onPressed: () => context.router.maybePop(),
+              onPressed: () => ref.read(autorouteProvider).maybePop(),
               icon: const Icon(
                 Icons.arrow_back,
               ),
@@ -69,7 +70,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                             onPressed: () {
                               days = 0;
                               setState(() {});
-                              context.router.maybePop();
+                              ref.read(autorouteProvider).maybePop();
                             },
                             child: const Text(
                               'Solo hoy',
@@ -83,7 +84,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                             onPressed: () {
                               days = 7;
                               setState(() {});
-                              context.router.maybePop();
+                              ref.read(autorouteProvider).maybePop();
                             },
                             child: const Text(
                               'Últimos 7 días',
@@ -97,7 +98,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                             onPressed: () {
                               days = 15;
                               setState(() {});
-                              context.router.maybePop();
+                              ref.read(autorouteProvider).maybePop();
                             },
                             child: const Text(
                               'Últimos 15 días',
@@ -111,7 +112,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                             onPressed: () {
                               days = 30;
                               setState(() {});
-                              context.router.maybePop();
+                              ref.read(autorouteProvider).maybePop();
                             },
                             child: const Text(
                               'Últimos 30 días',
@@ -125,7 +126,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                             onPressed: () {
                               days = 90;
                               setState(() {});
-                              context.router.maybePop();
+                              ref.read(autorouteProvider).maybePop();
                             },
                             child: const Text(
                               'Últimos 90 días',
@@ -137,7 +138,8 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                           ),
                         ],
                         cancelButton: CupertinoActionSheetAction(
-                          onPressed: () => context.router.maybePop(),
+                          onPressed: () =>
+                              ref.read(autorouteProvider).maybePop(),
                           child: const Text(
                             'Cancelar',
                             style: TextStyle(
@@ -210,7 +212,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
             backgroundColor: Theme.of(context).primaryColor,
             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconButton(
-              onPressed: () => context.router.maybePop(),
+              onPressed: () => ref.read(autorouteProvider).maybePop(),
               icon: const Icon(
                 Icons.arrow_back,
               ),
@@ -254,7 +256,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
             backgroundColor: Theme.of(context).primaryColor,
             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconButton(
-              onPressed: () => context.router.maybePop(),
+              onPressed: () => ref.read(autorouteProvider).maybePop(),
               icon: const Icon(
                 Icons.arrow_back,
               ),
@@ -376,13 +378,13 @@ class CustomSliverCard extends SliverPersistentHeaderDelegate {
   }
 }
 
-class PaymentHistoryCard extends StatelessWidget {
+class PaymentHistoryCard extends ConsumerWidget {
   const PaymentHistoryCard({super.key, required this.transfer});
 
   final Transfer transfer;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         ListTile(
@@ -408,12 +410,12 @@ class PaymentHistoryCard extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-          onTap: () => context.router.push(
-            ConfirmationRoute(
-              yapeo: false,
-              transferData: transfer,
-            ),
-          ),
+          onTap: () => ref.read(autorouteProvider).push(
+                ConfirmationRoute(
+                  yapeo: false,
+                  transferData: transfer,
+                ),
+              ),
         ),
         const Divider(
           indent: 10,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
 
 enum _DocumentType { DNI }
@@ -54,7 +55,7 @@ class _PersonalInformationRegistrationPageState
           style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
         ),
         leading: IconButton(
-          onPressed: () => context.router.maybePop(),
+          onPressed: () => ref.read(autorouteProvider).maybePop(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -210,7 +211,9 @@ class _PersonalInformationRegistrationPageState
                         newEmail: emailController.text,
                         newDNI: int.parse(documentIDController.text),
                       );
-                  context.router.push(const PasswordRegistrationRoute());
+                  ref
+                      .read(autorouteProvider)
+                      .push(const PasswordRegistrationRoute());
                 }
               : null,
           style: FilledButton.styleFrom(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/presentation/payments_history/transfers_controller.dart';
 import 'package:yapefalso/presentation/payments_history/user_credit_controller.dart';
@@ -25,7 +26,6 @@ class ConfirmationPage extends ConsumerStatefulWidget {
 }
 
 class _ConfirmationPageState extends ConsumerState<ConfirmationPage> {
-  //TODO: screenshot when share
   ScreenshotController screenshotController = ScreenshotController();
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,9 @@ class _ConfirmationPageState extends ConsumerState<ConfirmationPage> {
           onPressed: () {
             ref.invalidate(creditProvider);
             ref.invalidate(transfersProvider);
-            return context.router.popUntilRouteWithName('PaymentsRoute');
+            return ref
+                .read(autorouteProvider)
+                .popUntilRouteWithName('PaymentsRoute');
           },
           icon: Icon(
             Icons.close,
@@ -245,7 +247,7 @@ class _ConfirmationPageState extends ConsumerState<ConfirmationPage> {
   }
 }
 
-class FooterButtonsHistory extends StatelessWidget {
+class FooterButtonsHistory extends ConsumerWidget {
   const FooterButtonsHistory({
     super.key,
     required this.phone,
@@ -255,7 +257,7 @@ class FooterButtonsHistory extends StatelessWidget {
   final int phone;
   final ScreenshotController screenshotController;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -306,7 +308,8 @@ class FooterButtonsHistory extends StatelessWidget {
         Column(
           children: [
             IconButton.filled(
-              onPressed: () => context.router.push(PaymentRoute(phone: phone)),
+              onPressed: () =>
+                  ref.read(autorouteProvider).push(PaymentRoute(phone: phone)),
               icon: const Icon(
                 Icons.send,
                 size: 32,
@@ -398,7 +401,9 @@ class FooterButtonsConfirmation extends ConsumerWidget {
               onPressed: () {
                 ref.invalidate(creditProvider);
                 ref.invalidate(transfersProvider);
-                context.router.popUntilRouteWithName('PaymentsRoute');
+                ref
+                    .read(autorouteProvider)
+                    .popUntilRouteWithName('PaymentsRoute');
               },
               icon: const Icon(
                 Icons.house_outlined,

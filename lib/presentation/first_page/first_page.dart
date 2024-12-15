@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
 
 @RoutePage()
@@ -19,7 +20,7 @@ class FirstPage extends ConsumerWidget {
           final event = data.event;
 
           if (event == AuthChangeEvent.signedOut) {
-            context.router.replaceAll(
+            ref.read(autorouteProvider).replaceAll(
               [
                 const FirstRoute(),
               ],
@@ -62,8 +63,9 @@ class FirstPage extends ConsumerWidget {
             ),
             Expanded(child: Container()),
             FilledButton.tonalIcon(
-              onPressed: () =>
-                  context.router.push(const PhoneRegistrationRoute()),
+              onPressed: () => ref
+                  .read(autorouteProvider)
+                  .push(const PhoneRegistrationRoute()),
               label: Text('Crear Cuenta'.toUpperCase()),
               style: FilledButton.styleFrom(
                 shape: const RoundedRectangleBorder(
@@ -76,7 +78,8 @@ class FirstPage extends ConsumerWidget {
             ),
             const Gap(20),
             OutlinedButton.icon(
-              onPressed: () => context.router.push(const LoginEmailRoute()),
+              onPressed: () =>
+                  ref.read(autorouteProvider).push(const LoginEmailRoute()),
               label: Text('Ya tengo una cuenta'.toUpperCase()),
               style: OutlinedButton.styleFrom(
                 shape: const RoundedRectangleBorder(

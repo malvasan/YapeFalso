@@ -1,18 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 @RoutePage()
-class LoginEmailPage extends StatefulWidget {
+class LoginEmailPage extends ConsumerStatefulWidget {
   const LoginEmailPage({super.key});
 
   @override
-  State<LoginEmailPage> createState() => _LoginEmailPageState();
+  ConsumerState<LoginEmailPage> createState() => _LoginEmailPageState();
 }
 
-class _LoginEmailPageState extends State<LoginEmailPage> {
+class _LoginEmailPageState extends ConsumerState<LoginEmailPage> {
   late TextEditingController email;
   var _buttonEnabled = false;
 
@@ -41,7 +43,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
-            onPressed: () => context.router.maybePop(),
+            onPressed: () => ref.read(autorouteProvider).maybePop(),
             icon: Icon(
               Icons.arrow_back,
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -141,12 +143,12 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                     FilledButton.tonalIcon(
                       onPressed: _buttonEnabled
                           ? () {
-                              context.router.push(
-                                LoginPasswordRoute(
-                                  email: email.text,
-                                  numbers: numbers,
-                                ),
-                              );
+                              ref.read(autorouteProvider).push(
+                                    LoginPasswordRoute(
+                                      email: email.text,
+                                      numbers: numbers,
+                                    ),
+                                  );
                             }
                           : null,
                       label: Text('Continuar'.toUpperCase()),

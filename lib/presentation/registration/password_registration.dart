@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/registration/password_registration_controller.dart';
 
 @RoutePage()
@@ -79,10 +80,6 @@ class PasswordField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final password = ref.watch(passwordCreationProvider);
-
-    if (password.length == 6) {
-      context.router.push(const AccountTypeSelectionRoute());
-    }
 
     if (password.isEmpty) {
       return Expanded(

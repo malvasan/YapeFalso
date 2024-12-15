@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 import 'package:yapefalso/data/messaging.dart';
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
@@ -79,7 +80,9 @@ class _DebitCardRegistrtationState
               await auth.setFcmToken(fcmToken);
             }
             if (context.mounted) {
-              context.router.push(const RegistrationConfirmationRoute());
+              ref
+                  .read(autorouteProvider)
+                  .push(const RegistrationConfirmationRoute());
             }
           }
         },

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:yapefalso/autoroute/autoroute.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -22,13 +22,13 @@ Future<void> main() async {
   runApp(ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
-  MainApp({super.key});
-
-  final _appRouter = AppRouter();
+class MainApp extends ConsumerWidget {
+  const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appRouter = ref.watch(autorouteProvider);
+
     return MaterialApp.router(
       theme: ThemeData(
         useMaterial3: true,
@@ -46,7 +46,7 @@ class MainApp extends StatelessWidget {
           ),
         ),
       ),
-      routerConfig: _appRouter.config(),
+      routerConfig: appRouter.config(),
     );
   }
 }

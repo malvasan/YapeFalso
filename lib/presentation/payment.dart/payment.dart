@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/domain/transfer.dart';
 
 import 'package:yapefalso/domain/user_metadata.dart';
@@ -47,7 +46,8 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
       (stateBefore, state) => state.whenData(
         (data) {
           if (data != null) {
-            context.router
+            ref
+                .read(autorouteProvider)
                 .push(ConfirmationRoute(transferData: data, yapeo: true));
           }
         },
@@ -180,7 +180,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
   }
 }
 
-class PaymentBody extends StatelessWidget {
+class PaymentBody extends ConsumerWidget {
   const PaymentBody({
     super.key,
     required amountController,
@@ -198,20 +198,20 @@ class PaymentBody extends StatelessWidget {
   final void Function()? onPressed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            final stack = context.router.stack;
+            final stack = ref.read(autorouteProvider).stack;
             final path = stack[stack.length - 2].name;
             if (path != null) {
               if (path == 'CameraRoute') {
-                context.router.maybePop<bool>(false);
+                ref.read(autorouteProvider).maybePop<bool>(false);
               }
             }
-            context.router.maybePop();
+            ref.read(autorouteProvider).maybePop();
           },
           icon: const Icon(
             Icons.arrow_back,
@@ -220,8 +220,9 @@ class PaymentBody extends StatelessWidget {
         title: const Text('Yapear a'),
         actions: [
           IconButton(
-            onPressed: () =>
-                context.router.popUntilRouteWithName('PaymentsRoute'),
+            onPressed: () => ref
+                .read(autorouteProvider)
+                .popUntilRouteWithName('PaymentsRoute'),
             icon: const Icon(
               Icons.close,
             ),

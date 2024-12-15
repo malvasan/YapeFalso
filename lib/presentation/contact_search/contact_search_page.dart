@@ -1,17 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 @RoutePage()
-class ContactSearchPage extends StatelessWidget {
+class ContactSearchPage extends ConsumerWidget {
   const ContactSearchPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -19,7 +21,7 @@ class ContactSearchPage extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           leading: IconButton(
-            onPressed: () => context.router.maybePop(),
+            onPressed: () => ref.read(autorouteProvider).maybePop(),
             icon: const Icon(
               Icons.arrow_back,
             ),
@@ -183,12 +185,12 @@ class _ContactsListState extends State<ContactsList> {
   }
 }
 
-class ContactCard extends StatelessWidget {
+class ContactCard extends ConsumerWidget {
   const ContactCard({super.key, required this.name, required this.phone});
   final String name;
   final String phone;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         ListTile(
@@ -208,8 +210,13 @@ class ContactCard extends StatelessWidget {
                   color: Theme.of(context).primaryColor,
                 )
               : null,
-          onTap: () => context.router
-              .push(PaymentRoute(phone: int.parse(phone.replaceAll(' ', '')))),
+          onTap: () => ref.read(autorouteProvider).push(
+                PaymentRoute(
+                  phone: int.parse(
+                    phone.replaceAll(' ', ''),
+                  ),
+                ),
+              ),
         ),
         const Divider(
           indent: 16,

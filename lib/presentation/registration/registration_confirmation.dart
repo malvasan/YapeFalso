@@ -1,14 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 @RoutePage()
-class RegistrationConfirmationPage extends StatelessWidget {
+class RegistrationConfirmationPage extends ConsumerWidget {
   const RegistrationConfirmationPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
@@ -39,7 +41,8 @@ class RegistrationConfirmationPage extends StatelessWidget {
             ),
             Expanded(child: Container()),
             FilledButton(
-              onPressed: () => context.router.push(const PaymentsRoute()),
+              onPressed: () =>
+                  ref.read(autorouteProvider).push(const PaymentsRoute()),
               style: FilledButton.styleFrom(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(

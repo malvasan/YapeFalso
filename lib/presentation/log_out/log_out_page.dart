@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 import 'package:yapefalso/presentation/log_out/sign_out_controller.dart';
 
@@ -18,7 +19,7 @@ class LogOutPage extends ConsumerWidget {
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => context.router.maybePop(),
+          onPressed: () => ref.read(autorouteProvider).maybePop(),
           icon: Icon(
             Icons.arrow_back,
             color: Theme.of(context).scaffoldBackgroundColor,

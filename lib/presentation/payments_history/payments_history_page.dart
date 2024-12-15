@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/presentation/payments_history/transfers_controller.dart';
 import 'package:yapefalso/presentation/payments_history/user_controller.dart';
@@ -44,7 +45,8 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                 leading: IconButton(
-                  onPressed: () => context.router.push(const LogOutRoute()),
+                  onPressed: () =>
+                      ref.read(autorouteProvider).push(const LogOutRoute()),
                   icon: const Icon(
                     Icons.menu,
                   ),
@@ -123,7 +125,8 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
                     backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                     leading: IconButton(
-                      onPressed: () => context.router.push(const LogOutRoute()),
+                      onPressed: () =>
+                          ref.read(autorouteProvider).push(const LogOutRoute()),
                       icon: const Icon(
                         Icons.menu,
                       ),
@@ -442,8 +445,9 @@ class PaymentListHeader extends ConsumerWidget {
                     indent: 10,
                   ),
                   TextButton(
-                    onPressed: () =>
-                        context.router.push(const AllPaymentHistoryRoute()),
+                    onPressed: () => ref
+                        .read(autorouteProvider)
+                        .push(const AllPaymentHistoryRoute()),
                     style: TextButton.styleFrom(
                         foregroundColor:
                             const Color.fromARGB(255, 16, 203, 180)),
@@ -502,13 +506,13 @@ class TransfersHistory extends ConsumerWidget {
   }
 }
 
-class PaymentListFooter extends StatelessWidget {
+class PaymentListFooter extends ConsumerWidget {
   const PaymentListFooter({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -517,7 +521,8 @@ class PaymentListFooter extends StatelessWidget {
         children: [
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: () => context.router.push(const CameraRoute()),
+              onPressed: () =>
+                  ref.read(autorouteProvider).push(const CameraRoute()),
               icon: const Icon(
                 Icons.qr_code,
               ),
@@ -538,7 +543,8 @@ class PaymentListFooter extends StatelessWidget {
           const Gap(10),
           Expanded(
             child: FilledButton.tonalIcon(
-              onPressed: () => context.router.push(const ContactSearchRoute()),
+              onPressed: () =>
+                  ref.read(autorouteProvider).push(const ContactSearchRoute()),
               icon: const Icon(
                 Icons.send,
               ),
@@ -645,12 +651,12 @@ class BalanceField extends ConsumerWidget {
   }
 }
 
-class PaymentHistoryCard extends StatelessWidget {
+class PaymentHistoryCard extends ConsumerWidget {
   const PaymentHistoryCard({super.key, required this.transfer});
 
   final Transfer transfer;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         ListTile(
@@ -676,12 +682,12 @@ class PaymentHistoryCard extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-          onTap: () => context.router.push(
-            ConfirmationRoute(
-              yapeo: false,
-              transferData: transfer,
-            ),
-          ),
+          onTap: () => ref.read(autorouteProvider).push(
+                ConfirmationRoute(
+                  yapeo: false,
+                  transferData: transfer,
+                ),
+              ),
         ),
         const Divider(
           indent: 10,
