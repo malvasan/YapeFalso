@@ -6,7 +6,7 @@ part of 'autoroute_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$autorouteHash() => r'59fa13ec4854297f8b2c2950c6999d10ab8d6268';
+String _$autorouteHash() => r'fac193d7ea1bd1a79c8a6f3ea52b887ffdf1312e';
 
 /// See also [autoroute].
 @ProviderFor(autoroute)

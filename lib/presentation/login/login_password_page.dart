@@ -42,30 +42,28 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    //final isLoading = ref.watch(signInProvider).isLoading;
-
     final messaging = ref.read(messagingProvider);
     final auth = ref.read(authenticationProvider);
+    //TODO: HERE 1 log out
+    // ref.listen(
+    //   authenticationStateProvider,
+    //   (_, state) => state.whenOrNull(
+    //     data: (data) async {
+    //       final event = data.event;
 
-    ref.listen(
-      authenticationStateProvider,
-      (_, state) => state.whenOrNull(
-        data: (data) async {
-          final event = data.event;
+    //       if (event == AuthChangeEvent.signedIn) {
+    //         final fcmToken = await messaging.getToken();
 
-          if (event == AuthChangeEvent.signedIn) {
-            final fcmToken = await messaging.getToken();
-
-            if (fcmToken != null) {
-              await auth.setFcmToken(fcmToken);
-            }
-            if (context.mounted) {
-              ref.read(autorouteProvider).push(const PaymentsRoute());
-            }
-          }
-        },
-      ),
-    );
+    //         if (fcmToken != null) {
+    //           await auth.setFcmToken(fcmToken);
+    //         }
+    //         if (context.mounted) {
+    //           ref.read(autorouteProvider).push(const PaymentsRoute());
+    //         }
+    //       }
+    //     },
+    //   ),
+    // );
 
     messaging.firebaseMessaging.onTokenRefresh.listen(
       (fcmToken) async {
@@ -107,7 +105,9 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
                   ),
                 ),
                 child: Center(
-                  child: qr.isEmpty ? Text('QR') : QrImageView(data: qr),
+                  child: qr.isEmpty
+                      ? Text('QR')
+                      : Card(child: QrImageView(data: qr)),
                 ),
               ),
             ),

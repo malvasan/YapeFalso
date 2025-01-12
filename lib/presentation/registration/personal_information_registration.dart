@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -153,7 +154,9 @@ class _PersonalInformationRegistrationPageState
                 controller: emailController,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
-                  if (value == null || value.isEmpty || !value.contains('@')) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      !EmailValidator.validate(value)) {
                     return 'Ingrese correctamente su correo';
                   }
                   return null;

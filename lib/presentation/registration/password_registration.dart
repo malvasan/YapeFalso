@@ -2,8 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:yapefalso/autoroute/autoroute.gr.dart';
-import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/registration/password_registration_controller.dart';
 
 @RoutePage()

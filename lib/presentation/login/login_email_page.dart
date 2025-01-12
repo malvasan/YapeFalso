@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
+import 'package:email_validator/email_validator.dart';
 
 @RoutePage()
 class LoginEmailPage extends ConsumerStatefulWidget {
@@ -122,7 +123,7 @@ class _LoginEmailPageState extends ConsumerState<LoginEmailPage> {
                         validator: (value) {
                           if (value == null ||
                               value.isEmpty ||
-                              !value.contains('@')) {
+                              !EmailValidator.validate(value)) {
                             return 'Ingresa un correo electrónico válido';
                           }
 

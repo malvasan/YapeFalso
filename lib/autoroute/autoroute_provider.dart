@@ -5,5 +5,5 @@ part 'autoroute_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 AppRouter autoroute(AutorouteRef ref) {
-  return AppRouter();
+  return AppRouter(ref);
 }

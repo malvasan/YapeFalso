@@ -68,26 +68,27 @@ class _DebitCardRegistrtationState
     final auth = ref.read(authenticationProvider);
     final isLoading = ref.watch(signUpProvider).isLoading;
 
-    ref.listen(
-      authenticationStateProvider,
-      (_, state) => state.whenData(
-        (data) async {
-          final event = data.event;
-          if (event == AuthChangeEvent.signedIn) {
-            final fcmToken = await messaging.getToken();
+    //TODO: HERE 1 log in
+    // ref.listen(
+    //   authenticationStateProvider,
+    //   (_, state) => state.whenData(
+    //     (data) async {
+    //       final event = data.event;
+    //       if (event == AuthChangeEvent.signedIn) {
+    //         final fcmToken = await messaging.getToken();
 
-            if (fcmToken != null) {
-              await auth.setFcmToken(fcmToken);
-            }
-            if (context.mounted) {
-              ref
-                  .read(autorouteProvider)
-                  .push(const RegistrationConfirmationRoute());
-            }
-          }
-        },
-      ),
-    );
+    //         if (fcmToken != null) {
+    //           await auth.setFcmToken(fcmToken);
+    //         }
+    //         if (context.mounted) {
+    //           ref
+    //               .read(autorouteProvider)
+    //               .push(const RegistrationConfirmationRoute());
+    //         }
+    //       }
+    //     },
+    //   ),
+    // );
 
     messaging.firebaseMessaging.onTokenRefresh.listen(
       (fcmToken) async {

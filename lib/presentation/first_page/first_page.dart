@@ -13,22 +13,23 @@ class FirstPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(
-      authenticationStateProvider,
-      (_, state) => state.whenData(
-        (data) {
-          final event = data.event;
+    //TODO: HERE 1 log out
+    // ref.listen(
+    //   authenticationStateProvider,
+    //   (_, state) => state.whenData(
+    //     (data) {
+    //       final event = data.event;
 
-          if (event == AuthChangeEvent.signedOut) {
-            ref.read(autorouteProvider).replaceAll(
-              [
-                const FirstRoute(),
-              ],
-            );
-          }
-        },
-      ),
-    );
+    //       if (event == AuthChangeEvent.signedOut) {
+    //         ref.read(autorouteProvider).replaceAll(
+    //           [
+    //             const FirstRoute(),
+    //           ],
+    //         );
+    //       }
+    //     },
+    //   ),
+    // );
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(

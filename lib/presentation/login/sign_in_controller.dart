@@ -1,4 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:yapefalso/autoroute/autoroute.gr.dart';
+import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 
 part 'sign_in_controller.g.dart';
@@ -14,6 +16,10 @@ class SignIn extends _$SignIn {
       await ref
           .read(authenticationProvider)
           .signIn(email: email, password: password);
+
+      await ref.read(autorouteProvider).replaceAll([
+        const PaymentsRoute(),
+      ]);
     });
   }
 }

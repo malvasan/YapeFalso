@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,6 +29,7 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(autorouteProvider);
+    final supabase = Supabase.instance.client;
 
     return MaterialApp.router(
       theme: ThemeData(
@@ -46,7 +48,10 @@ class MainApp extends ConsumerWidget {
           ),
         ),
       ),
-      routerConfig: appRouter.config(),
+      routerConfig: appRouter.config(
+          // reevaluateListenable:
+          //     ReevaluateListenable.stream(supabase.auth.onAuthStateChange),
+          ),
     );
   }
 }
