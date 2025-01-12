@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/presentation/registration/password_registration_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class PasswordRegistrationPage extends StatelessWidget {
@@ -113,7 +114,7 @@ class HiddenPassword extends ConsumerWidget {
             padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
             child: Icon(
               Icons.circle_rounded,
-              color: Color.fromARGB(255, 16, 203, 180),
+              color: contrastColor,
             ),
           ),
         for (var value = 0; value < 6 - length; value++)
@@ -121,7 +122,7 @@ class HiddenPassword extends ConsumerWidget {
             padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
             child: Icon(
               Icons.circle_outlined,
-              color: Color.fromARGB(255, 16, 203, 180),
+              color: contrastColor,
             ),
           ),
       ],
@@ -129,7 +130,6 @@ class HiddenPassword extends ConsumerWidget {
   }
 }
 
-//TODO: can be sorted like the real app
 class NumericPad extends ConsumerWidget {
   const NumericPad({
     super.key,
@@ -140,8 +140,6 @@ class NumericPad extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        //TODO: refactor to be able to create the widgets without hardcode numberss
-        //TODO: can be a grid
         const RowNumber(
           numbers: [1, 2, 3],
         ),
@@ -234,7 +232,7 @@ class NumberButton extends ConsumerWidget {
                 Radius.elliptical(5, 5),
               ),
             ),
-            backgroundColor: const Color.fromARGB(144, 196, 21, 235),
+            backgroundColor: mainColorTransparent,
             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Text('$value'),

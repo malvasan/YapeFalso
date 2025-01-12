@@ -20,7 +20,7 @@ class PasswordCreation extends _$PasswordCreation {
 
   void decrease() {
     state = [
-      for (var value = 0; value < state.length - 1; value++) value,
+      for (var value = 0; value < state.length - 1; value++) state[value],
     ];
   }
 

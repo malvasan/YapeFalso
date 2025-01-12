@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 
 import 'package:yapefalso/presentation/log_out/sign_out_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class LogOutPage extends ConsumerWidget {
@@ -14,6 +15,7 @@ class LogOutPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = ref.watch(signOutProvider).isLoading;
+    final colorTopIcons = Color(0xFF8C3D99);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -48,102 +50,35 @@ class LogOutPage extends ConsumerWidget {
                     'Full name',
                     maxLines: 1,
                     style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 const Gap(30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      children: [
-                        Card(
-                          elevation: 7,
-                          color: const Color(0xFF8C3D99),
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Icon(
-                              Icons.person_outline_rounded,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Mi cuenta',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                        ),
-                      ],
+                    TopIcon(
+                      colorTopIcons: colorTopIcons,
+                      icon: Icons.person_outline_rounded,
+                      text: 'Mi cuenta',
                     ),
-                    Column(
-                      children: [
-                        Card(
-                          elevation: 7,
-                          color: const Color(0xFF8C3D99),
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Icon(
-                              Icons.qr_code,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Mi QR',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                        ),
-                      ],
+                    TopIcon(
+                      colorTopIcons: colorTopIcons,
+                      icon: Icons.qr_code,
+                      text: 'Mi QR',
                     ),
-                    Column(
-                      children: [
-                        Card(
-                          elevation: 7,
-                          color: const Color(0xFF8C3D99),
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Icon(
-                              Icons.settings_outlined,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Ajustes',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                        ),
-                      ],
+                    TopIcon(
+                      colorTopIcons: colorTopIcons,
+                      icon: Icons.settings_outlined,
+                      text: 'Ajustes',
                     ),
-                    Column(
-                      children: [
-                        Card(
-                          elevation: 7,
-                          color: const Color(0xFF8C3D99),
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Icon(
-                              Icons.headphones_outlined,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Ayuda',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                        ),
-                      ],
+                    TopIcon(
+                      colorTopIcons: colorTopIcons,
+                      icon: Icons.headphones_outlined,
+                      text: 'Ayuda',
                     ),
                   ],
                 ),
@@ -405,34 +340,61 @@ class LogOutPage extends ConsumerWidget {
               ],
             ),
           ),
-          Visibility(
-            visible: isLoading,
-            child: Material(
-              color: Colors.black.withAlpha(150),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Gap(10),
-                      CupertinoActivityIndicator(
-                        radius: 15,
-                        color: Color(0xFF4A1972),
-                      ),
-                      Gap(10),
-                    ],
-                  ),
+          NotificationPopUp(
+            isLoading: isLoading,
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Gap(10),
+                CupertinoActivityIndicator(
+                  radius: 15,
+                  color: mainColorDarker,
                 ),
-              ),
+                Gap(10),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class TopIcon extends StatelessWidget {
+  const TopIcon({
+    super.key,
+    required this.colorTopIcons,
+    required this.icon,
+    required this.text,
+  });
+
+  final Color colorTopIcons;
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Card(
+          elevation: 7,
+          color: colorTopIcons,
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Icon(
+              icon,
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+        ),
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+        ),
+      ],
     );
   }
 }

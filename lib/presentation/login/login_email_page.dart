@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class LoginEmailPage extends ConsumerStatefulWidget {
@@ -105,7 +106,7 @@ class _LoginEmailPageState extends ConsumerState<LoginEmailPage> {
                               text: 'Crea tu Yape aqui',
                               recognizer: TapGestureRecognizer()..onTap = () {},
                               style: const TextStyle(
-                                color: Color.fromARGB(255, 16, 203, 180),
+                                color: contrastColor,
                               ),
                             )
                           ]),
@@ -158,8 +159,7 @@ class _LoginEmailPageState extends ConsumerState<LoginEmailPage> {
                           borderRadius:
                               BorderRadius.all(Radius.elliptical(5, 5)),
                         ),
-                        backgroundColor:
-                            const Color.fromARGB(255, 16, 203, 180),
+                        backgroundColor: contrastColor,
                         foregroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                         minimumSize: const Size(371.4, 50),
@@ -227,7 +227,7 @@ class _LoginEmailPageState extends ConsumerState<LoginEmailPage> {
                               text: 'Ingresa al Centro de Ayuda',
                               recognizer: TapGestureRecognizer()..onTap = () {},
                               style: const TextStyle(
-                                  color: Color.fromARGB(255, 16, 203, 180),
+                                  color: contrastColor,
                                   fontWeight: FontWeight.w700),
                             )
                           ]),

@@ -32,7 +32,7 @@ class _ConfirmationPageState extends ConsumerState<ConfirmationPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4A1972),
+        backgroundColor: mainColorDarker,
         leading: IconButton(
           onPressed: () {
             ref.invalidate(creditProvider);
@@ -59,7 +59,7 @@ class _ConfirmationPageState extends ConsumerState<ConfirmationPage> {
                     end: Alignment.bottomCenter,
                     stops: const [0.01, 0.2],
                     colors: [
-                      const Color(0xFF4A1972),
+                      mainColorDarker,
                       Theme.of(context).primaryColor,
                     ],
                   ),
@@ -287,9 +287,9 @@ class FooterButtonsHistory extends ConsumerWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color(0xFF8C3D99),
+                backgroundColor: mainColorTransparent,
                 side: const BorderSide(
-                  color: Color(0xFF8C3D99),
+                  color: mainColorTransparent,
                 ),
               ),
             ),
@@ -319,9 +319,9 @@ class FooterButtonsHistory extends ConsumerWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color.fromARGB(255, 16, 203, 180),
+                backgroundColor: contrastColor,
                 side: const BorderSide(
-                  color: Color.fromARGB(255, 16, 203, 180),
+                  color: contrastColor,
                 ),
               ),
             ),
@@ -378,9 +378,9 @@ class FooterButtonsConfirmation extends ConsumerWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color(0xFF8C3D99),
+                backgroundColor: mainColorTransparent,
                 side: const BorderSide(
-                  color: Color(0xFF8C3D99),
+                  color: mainColorTransparent,
                 ),
               ),
             ),
@@ -414,9 +414,9 @@ class FooterButtonsConfirmation extends ConsumerWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color(0xFF8C3D99),
+                backgroundColor: mainColorTransparent,
                 side: const BorderSide(
-                  color: Color(0xFF8C3D99),
+                  color: mainColorTransparent,
                 ),
               ),
             ),
@@ -444,9 +444,9 @@ class FooterButtonsConfirmation extends ConsumerWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color.fromARGB(255, 16, 203, 180),
+                backgroundColor: contrastColor,
                 side: const BorderSide(
-                  color: Color.fromARGB(255, 16, 203, 180),
+                  color: contrastColor,
                 ),
               ),
             ),
@@ -468,9 +468,7 @@ class FooterButtonsConfirmation extends ConsumerWidget {
 class PathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      //..style = PaintingStyle.stroke
-      ..color = Colors.white;
+    Paint paint = Paint()..color = Colors.white;
 
     final distance = size.width / 56;
     Path path = Path();
@@ -479,11 +477,7 @@ class PathPainter extends CustomPainter {
     path.moveTo(pointBefore.x, pointBefore.y);
 
     for (var x = 1; x < 57; x++) {
-      //path.moveTo(pointBefore.x, pointBefore.y);
       if (x % 2 == 1) {
-        // path.quadraticBezierTo(pointBefore.x + (distance / 2), 0,
-        //     pointBefore.x + distance, pointBefore.y);
-
         path.cubicTo(
             pointBefore.x + (distance * 3 / 7),
             pointBefore.y / 2,
@@ -493,9 +487,6 @@ class PathPainter extends CustomPainter {
             0);
         pointBefore = Point(pointBefore.x + distance, 0);
       } else {
-        // path.quadraticBezierTo(pointBefore.x + (distance / 2), 5,
-        //     pointBefore.x + distance, pointBefore.y);
-
         path.cubicTo(
             pointBefore.x + ((distance * 1) / 3),
             pointBefore.y / 2,
@@ -505,23 +496,14 @@ class PathPainter extends CustomPainter {
             shapeHeight);
         pointBefore = Point(pointBefore.x + distance, shapeHeight);
       }
-      //pointBefore = Point(pointBefore.x + distance, pointBefore.y);
     }
 
-    //path.moveTo(0, pointBefore.y);
-    //path.lineTo(size.width, shapeHeight);
     path.lineTo(size.width, size.height - shapeHeight);
-    //path.lineTo(0, size.height - shapeHeight);
 
     pointBefore = Point(size.width, size.height - shapeHeight);
     path.moveTo(pointBefore.x, pointBefore.y);
     for (var x = 1; x < 57; x++) {
-      //path.moveTo(pointBefore.x, pointBefore.y);
-
       if (x % 2 == 1) {
-        // path.quadraticBezierTo(pointBefore.x - (distance / 2), size.height,
-        //     pointBefore.x - distance, pointBefore.y);
-
         path.cubicTo(
             pointBefore.x - (distance * 3 / 7),
             pointBefore.y,
@@ -531,9 +513,6 @@ class PathPainter extends CustomPainter {
             size.height);
         pointBefore = Point(pointBefore.x - distance, size.height);
       } else {
-        // path.quadraticBezierTo(pointBefore.x - (distance / 2), size.height - 5,
-        //     pointBefore.x - distance, pointBefore.y);
-
         path.cubicTo(
             pointBefore.x - (distance / 2),
             pointBefore.y,
@@ -544,10 +523,8 @@ class PathPainter extends CustomPainter {
         pointBefore =
             Point(pointBefore.x - distance, size.height - shapeHeight);
       }
-
-      //pointBefore = Point(pointBefore.x - distance, pointBefore.y);
     }
-    //path.moveTo(pointBefore.x, pointBefore.y);
+
     path.lineTo(0, shapeHeight);
 
     path.close();

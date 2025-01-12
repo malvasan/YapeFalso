@@ -11,6 +11,7 @@ import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/domain/user_metadata.dart';
 import 'package:yapefalso/presentation/payment.dart/payment_controller.dart';
 import 'package:yapefalso/presentation/payment.dart/user_transfer_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class PaymentPage extends ConsumerStatefulWidget {
@@ -74,60 +75,41 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                   receiverID: data.id);
             },
           ),
-          Visibility(
-            visible: isLoading,
-            child: Material(
-              color: Colors.black.withAlpha(150),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Gap(10),
-                      CupertinoActivityIndicator(
-                        radius: 15,
-                        color: Color(0xFF4A1972),
-                      ),
-                      Gap(10),
-                      Text(
-                        'Yapeando',
-                        style: TextStyle(fontSize: 17),
-                      ),
-                    ],
-                  ),
+          NotificationPopUp(
+            isLoading: isLoading,
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Gap(10),
+                CupertinoActivityIndicator(
+                  radius: 15,
+                  color: mainColorDarker,
                 ),
-              ),
+                Gap(10),
+                Text(
+                  'Yapeando',
+                  style: TextStyle(fontSize: 17),
+                ),
+              ],
             ),
           ),
-          Visibility(
-            visible: isError,
-            child: Material(
-              color: Colors.black.withAlpha(150),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                  child: CupertinoAlertDialog(
-                    title: const Text('Te falta saldo para este yapeo'),
-                    actions: [
-                      CupertinoDialogAction(
-                        isDefaultAction: true,
-                        onPressed: () {
-                          ref.invalidate(paymentProvider);
-                        },
-                        child: const Text(
-                          'Entendido',
-                          style: TextStyle(color: Color(0xFF2073E8)),
-                        ),
-                      )
-                    ],
+          NotificationPopUp(
+            isLoading: isError,
+            noWhite: true,
+            child: CupertinoAlertDialog(
+              title: const Text('Te falta saldo para este yapeo'),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    ref.invalidate(paymentProvider);
+                  },
+                  child: const Text(
+                    'Entendido',
+                    style: TextStyle(color: cupertinoColor),
                   ),
-                ),
-              ),
+                )
+              ],
             ),
           ),
         ]);
@@ -148,30 +130,18 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
             name: 'Buscando Yapero',
             onPressed: null,
           ),
-          Visibility(
-            visible: true,
-            child: Material(
-              color: Colors.black.withAlpha(150),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Gap(10),
-                      CupertinoActivityIndicator(
-                        radius: 15,
-                        color: Color(0xFF4A1972),
-                      ),
-                      Gap(10),
-                    ],
-                  ),
+          NotificationPopUp(
+            isLoading: isLoading,
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Gap(10),
+                CupertinoActivityIndicator(
+                  radius: 15,
+                  color: mainColorDarker,
                 ),
-              ),
+                Gap(10),
+              ],
             ),
           ),
         ]);
@@ -342,10 +312,9 @@ class PaymentBody extends ConsumerWidget {
                               borderRadius:
                                   BorderRadius.all(Radius.elliptical(5, 5)),
                             ),
-                            foregroundColor:
-                                const Color.fromARGB(255, 16, 203, 180),
+                            foregroundColor: contrastColor,
                             side: const BorderSide(
-                              color: Color.fromARGB(255, 16, 203, 180),
+                              color: contrastColor,
                             ),
                           ),
                         ),
@@ -360,8 +329,7 @@ class PaymentBody extends ConsumerWidget {
                                 borderRadius:
                                     BorderRadius.all(Radius.elliptical(5, 5)),
                               ),
-                              backgroundColor:
-                                  const Color.fromARGB(255, 16, 203, 180),
+                              backgroundColor: contrastColor,
                               foregroundColor:
                                   Theme.of(context).scaffoldBackgroundColor),
                         ),
@@ -385,7 +353,7 @@ class SinglePeriodEnforcer extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final newText = newValue.text;
-    // Allow only one period
+
     if ('.'.allMatches(newText).length <= 1) {
       return newValue;
     }

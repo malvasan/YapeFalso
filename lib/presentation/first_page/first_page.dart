@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
-import 'package:yapefalso/presentation/first_page/session_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class FirstPage extends ConsumerWidget {
@@ -13,23 +13,6 @@ class FirstPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //TODO: HERE 1 log out
-    // ref.listen(
-    //   authenticationStateProvider,
-    //   (_, state) => state.whenData(
-    //     (data) {
-    //       final event = data.event;
-
-    //       if (event == AuthChangeEvent.signedOut) {
-    //         ref.read(autorouteProvider).replaceAll(
-    //           [
-    //             const FirstRoute(),
-    //           ],
-    //         );
-    //       }
-    //     },
-    //   ),
-    // );
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
@@ -72,7 +55,7 @@ class FirstPage extends ConsumerWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
-                backgroundColor: const Color.fromARGB(255, 16, 203, 180),
+                backgroundColor: contrastColor,
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                 minimumSize: const Size(371.4, 50),
               ),
@@ -87,9 +70,9 @@ class FirstPage extends ConsumerWidget {
                   borderRadius: BorderRadius.all(Radius.elliptical(5, 5)),
                 ),
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                backgroundColor: const Color(0xFF8C3D99),
+                backgroundColor: mainColorTransparent,
                 side: const BorderSide(
-                  color: Color(0xFF8C3D99),
+                  color: mainColorTransparent,
                 ),
                 minimumSize: const Size(371.4, 50),
               ),

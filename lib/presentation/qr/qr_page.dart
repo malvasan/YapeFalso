@@ -65,7 +65,6 @@ class _CameraPageState extends ConsumerState<CameraPage> {
     final camera = _cameras[_cameraIndex];
     _controller = CameraController(
       camera,
-      // Set to ResolutionPreset.high. Do NOT set it to ResolutionPreset.max because for some phones does NOT work.
       ResolutionPreset.high,
       enableAudio: false,
       imageFormatGroup: Platform.isAndroid
@@ -80,39 +79,6 @@ class _CameraPageState extends ConsumerState<CameraPage> {
       setState(() {});
     });
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   controller = CameraController(
-  //     cameras[0],
-  //     ResolutionPreset.high,
-  //     enableAudio: false,
-  //     imageFormatGroup: Platform.isAndroid
-  //         ? ImageFormatGroup.nv21 // for Android
-  //         : ImageFormatGroup.bgra8888,
-  //   );
-
-  //   controller.initialize().then((_) async {
-  //     if (!mounted) {
-  //       return;
-  //     }
-  //     setState(() {});
-
-  //     await controller.startImageStream(processCameraImage);
-  //   }).catchError((Object e) {
-  //     if (e is CameraException) {
-  //       switch (e.code) {
-  //         case 'CameraAccessDenied':
-  //           // Handle access errors here.
-  //           break;
-  //         default:
-  //           // Handle other errors here.
-  //           break;
-  //       }
-  //     }
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -135,19 +101,6 @@ class _CameraPageState extends ConsumerState<CameraPage> {
       return Container();
     }
 
-    // return MaterialApp(
-    //   home: Stack(children: [
-    //     CameraPreview(_controller!),
-    //     Container(
-    //       child: CustomPaint(
-    //         painter: BoxPainter(),
-    //       ),
-    //     )
-    //   ]),
-    // );
-    // return MaterialApp(
-    //   home: CameraPreview(_controller!),
-    // );
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -213,7 +166,8 @@ class _CameraPageState extends ConsumerState<CameraPage> {
                   child: Text(
                     _cameraFlash ? 'Apagar Linterna' : 'Encender Linterna',
                     style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
                   ),
                 ),
                 const Gap(30),
@@ -238,12 +192,6 @@ class _CameraPageState extends ConsumerState<CameraPage> {
     );
   }
 
-  //YP-USERID
-  //YP-974578579
-  //YP-numero de telefono
-  //expresiones regulares( verificar qr)
-  //numeros unicos asociados
-
   Future<void> _processCameraImage(CameraImage availableImage) async {
     final inputImage = _inputImageFromCameraImage(availableImage);
 
@@ -256,14 +204,10 @@ class _CameraPageState extends ConsumerState<CameraPage> {
     final barcodeScanner = BarcodeScanner();
     final barcodes = await barcodeScanner.processImage(inputImage);
     var isInsideBox = false;
-    //vission detector view
-    //barcode scanner, camera view
 
     for (Barcode barcode in barcodes) {
       if (barcode.format != BarcodeFormat.qrCode) continue;
-      // final BarcodeType type = barcode.type;
-      // final Rect boundingBox = barcode.boundingBox;
-      // final String? displayValue = barcode.displayValue;
+
       final String? rawValue = barcode.rawValue;
       if (_isValidQR) continue;
       if (inputImage.metadata?.size != null &&
@@ -332,8 +276,6 @@ class _CameraPageState extends ConsumerState<CameraPage> {
       );
       cornerPoints.add(Offset(x, y));
     }
-    // log(size.toString());
-    // log(cornerPoints.toString());
 
     final distanceBox = size.width / 2;
     final boxCenterPoint = Offset(size.width / 2, size.height / 2);
@@ -465,10 +407,7 @@ class _CameraPageState extends ConsumerState<CameraPage> {
 class BoxPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      // ..style = PaintingStyle.stroke
-      // ..strokeWidth = 0.5
-      ..color = Colors.black54;
+    Paint paint = Paint()..color = Colors.black54;
     Paint paintBox = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5

@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
-import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/presentation/payments_history/transfers_controller.dart';
 import 'package:yapefalso/presentation/payments_history/user_controller.dart';
 import 'package:yapefalso/presentation/payments_history/user_credit_controller.dart';
+import 'package:yapefalso/presentation/payments_history/widgets/payment_card.dart';
 import 'package:yapefalso/utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -40,16 +40,14 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
           skipLoadingOnRefresh: false,
           data: (data) {
             return Scaffold(
-              backgroundColor: const Color(0xFF4A1972),
+              backgroundColor: mainColorDarker,
               appBar: AppBar(
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                 leading: IconButton(
                   onPressed: () =>
                       ref.read(autorouteProvider).push(const LogOutRoute()),
-                  icon: const Icon(
-                    Icons.menu,
-                  ),
+                  icon: const Icon(Icons.menu),
                 ),
                 title: Text(data.name),
                 actions: [
@@ -58,8 +56,9 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
                     icon: const Icon(Icons.headset_mic_outlined),
                   ),
                   IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.notification_add_outlined))
+                    onPressed: () {},
+                    icon: const Icon(Icons.notification_add_outlined),
+                  )
                 ],
               ),
               body: Container(
@@ -70,7 +69,7 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
                     stops: const [0.15, 1.0],
                     colors: [
                       Theme.of(context).primaryColor,
-                      const Color(0xFF4A1972),
+                      mainColorDarker,
                     ],
                   ),
                 ),
@@ -86,7 +85,7 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
                     ),
                     SliverToBoxAdapter(
                       child: Container(
-                        color: const Color(0xFF4A1972),
+                        color: mainColorDarker,
                         child: const PaymentListHeader(),
                       ),
                     ),
@@ -120,86 +119,75 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
           loading: () {
             return Stack(children: [
               Scaffold(
-                  backgroundColor: const Color(0xFF4A1972),
-                  appBar: AppBar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    leading: IconButton(
-                      onPressed: () =>
-                          ref.read(autorouteProvider).push(const LogOutRoute()),
-                      icon: const Icon(
-                        Icons.menu,
-                      ),
+                backgroundColor: mainColorDarker,
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  leading: IconButton(
+                    onPressed: () =>
+                        ref.read(autorouteProvider).push(const LogOutRoute()),
+                    icon: const Icon(
+                      Icons.menu,
                     ),
-                    actions: [
-                      IconButton(
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.headset_mic_outlined),
+                    ),
+                    IconButton(
                         onPressed: () {},
-                        icon: const Icon(Icons.headset_mic_outlined),
-                      ),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.notification_add_outlined))
-                    ],
-                  ),
-                  body: Column(
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              stops: const [0.25, 1.0],
-                              colors: [
-                                Theme.of(context).primaryColor,
-                                const Color(0xFF4A1972),
-                              ],
-                            ),
+                        icon: const Icon(Icons.notification_add_outlined))
+                  ],
+                ),
+                body: Column(
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: const [0.25, 1.0],
+                            colors: [
+                              Theme.of(context).primaryColor,
+                              mainColorDarker,
+                            ],
                           ),
                         ),
-                      ),
-                      Flexible(
-                        flex: 6,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            border: Border.all(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  )),
-              Visibility(
-                visible: isLoading,
-                child: Material(
-                  color: Colors.black.withAlpha(150),
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Gap(10),
-                          CupertinoActivityIndicator(
-                            radius: 15,
-                            color: Color(0xFF4A1972),
-                          ),
-                          Gap(10),
-                        ],
                       ),
                     ),
-                  ),
+                    Flexible(
+                      flex: 6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          border: Border.all(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              NotificationPopUp(
+                isLoading: isLoading,
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Gap(10),
+                    CupertinoActivityIndicator(
+                      radius: 15,
+                      color: mainColorDarker,
+                    ),
+                    Gap(10),
+                  ],
                 ),
               ),
             ]);
@@ -236,7 +224,7 @@ class _CustomCarouselState extends State<CustomCarousel>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF4A1972),
+      color: mainColorDarker,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -376,7 +364,7 @@ class CustomSliverGrid extends SliverPersistentHeaderDelegate {
           stops: const [0.25, 1.0],
           colors: [
             Theme.of(context).primaryColor,
-            const Color(0xFF4A1972),
+            mainColorDarker,
           ],
         ),
       ),
@@ -438,7 +426,7 @@ class PaymentListHeader extends ConsumerWidget {
                       ref.invalidate(transfersProvider);
                     },
                     icon: const Icon(Icons.refresh),
-                    color: const Color.fromARGB(255, 16, 203, 180),
+                    color: contrastColor,
                   ),
                   const VerticalDivider(
                     endIndent: 10,
@@ -448,9 +436,7 @@ class PaymentListHeader extends ConsumerWidget {
                     onPressed: () => ref
                         .read(autorouteProvider)
                         .push(const AllPaymentHistoryRoute()),
-                    style: TextButton.styleFrom(
-                        foregroundColor:
-                            const Color.fromARGB(255, 16, 203, 180)),
+                    style: TextButton.styleFrom(foregroundColor: contrastColor),
                     child: const Text('Ver todos'),
                   ),
                 ],
@@ -466,9 +452,6 @@ class PaymentListHeader extends ConsumerWidget {
     );
   }
 }
-
-//TODO: carrusel package
-//TODO: push notification
 
 class TransfersHistory extends ConsumerWidget {
   const TransfersHistory({
@@ -533,9 +516,9 @@ class PaymentListFooter extends ConsumerWidget {
                     Radius.elliptical(5, 5),
                   ),
                 ),
-                foregroundColor: const Color.fromARGB(255, 16, 203, 180),
+                foregroundColor: contrastColor,
                 side: const BorderSide(
-                  color: Color.fromARGB(255, 16, 203, 180),
+                  color: contrastColor,
                 ),
               ),
             ),
@@ -555,7 +538,7 @@ class PaymentListFooter extends ConsumerWidget {
                     Radius.elliptical(5, 5),
                   ),
                 ),
-                backgroundColor: const Color.fromARGB(255, 16, 203, 180),
+                backgroundColor: contrastColor,
                 foregroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
@@ -638,7 +621,7 @@ class BalanceField extends ConsumerWidget {
               padding: EdgeInsets.all(1.0),
               child: CupertinoActivityIndicator(
                 radius: 15,
-                color: Color(0xFF4A1972),
+                color: mainColorDarker,
               ),
             ),
         error: (error, stackTrace) => Text('$error'),
@@ -648,54 +631,6 @@ class BalanceField extends ConsumerWidget {
             style: const TextStyle(color: Colors.black, fontSize: 16),
           );
         });
-  }
-}
-
-class PaymentHistoryCard extends ConsumerWidget {
-  const PaymentHistoryCard({super.key, required this.transfer});
-
-  final Transfer transfer;
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(
-            transfer.name,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          subtitle: Text(
-            convertToYapeFormat(transfer.createdAt),
-            style: TextStyle(color: Theme.of(context).disabledColor),
-          ),
-          trailing: transfer.isPositive
-              ? Text(
-                  'S/ ${transfer.amount.toStringAsPrecision(2)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                  ),
-                )
-              : Text(
-                  '- S/ ${transfer.amount.toStringAsPrecision(2)}',
-                  style: const TextStyle(
-                    color: Color(0xFFD3526E),
-                    fontSize: 18,
-                  ),
-                ),
-          onTap: () => ref.read(autorouteProvider).push(
-                ConfirmationRoute(
-                  yapeo: false,
-                  transferData: transfer,
-                ),
-              ),
-        ),
-        const Divider(
-          indent: 10,
-          endIndent: 10,
-          height: 1,
-        ),
-      ],
-    );
   }
 }
 

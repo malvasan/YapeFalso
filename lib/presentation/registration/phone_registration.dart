@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class PhoneRegistrationPage extends ConsumerStatefulWidget {
@@ -135,13 +136,14 @@ class _PhoneRegistrationPageState extends ConsumerState<PhoneRegistrationPage> {
                 }
               : null,
           style: FilledButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.elliptical(5, 5),
-                ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.elliptical(5, 5),
               ),
-              backgroundColor: const Color.fromARGB(255, 16, 203, 180),
-              foregroundColor: Theme.of(context).scaffoldBackgroundColor),
+            ),
+            backgroundColor: contrastColor,
+            foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+          ),
           child: const Text(
             'Continuar',
             style: TextStyle(fontSize: 17),

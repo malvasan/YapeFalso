@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 enum _DocumentType { DNI }
 
@@ -53,7 +54,9 @@ class _PersonalInformationRegistrationPageState
         centerTitle: true,
         title: Text(
           'Crear cuenta',
-          style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
+          style: TextStyle(
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
         ),
         leading: IconButton(
           onPressed: () => ref.read(autorouteProvider).maybePop(),
@@ -108,7 +111,6 @@ class _PersonalInformationRegistrationPageState
                   },
                 ).toList(),
                 onChanged: (value) {
-                  // This is called when the user selects an item.
                   dropdownValue = value!;
                   setState(() {});
                 },
@@ -128,7 +130,7 @@ class _PersonalInformationRegistrationPageState
                 keyboardType: const TextInputType.numberWithOptions(),
                 validator: (value) {
                   if (value == null || value.isEmpty || value.length < 8) {
-                    return 'Ingrese correctamente su numero de documento';
+                    return 'Ingrese correctamente su número de documento';
                   }
                   return null;
                 },
@@ -149,7 +151,7 @@ class _PersonalInformationRegistrationPageState
               child: TextFormField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Correo electronico',
+                  labelText: 'Correo electrónico',
                 ),
                 controller: emailController,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -225,7 +227,7 @@ class _PersonalInformationRegistrationPageState
                 Radius.elliptical(5, 5),
               ),
             ),
-            backgroundColor: const Color.fromARGB(255, 16, 203, 180),
+            backgroundColor: contrastColor,
             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: const Text(

@@ -1,12 +1,18 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yapefalso/domain/transfer.dart';
 
 enum Months { en, feb, mar, abr, may, jun, jul, ag, set, oct, nov, dic }
+
+const mainColor = Color(0xFF742284);
+const mainColorTransparent = Color(0xFF8C3D99);
+const mainColorDarker = Color(0xFF4A1972);
+const contrastColor = Color.fromARGB(255, 16, 203, 180);
+const cupertinoColor = Color(0xFF2073E8);
 
 String convertToYapeFormat(DateTime date) {
   final localDate = date.toLocal();
@@ -89,4 +95,37 @@ Future<bool> saveUser({required int number, required String email}) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('email', email);
   return await prefs.setString('qr', number.toString());
+}
+
+class NotificationPopUp extends StatelessWidget {
+  const NotificationPopUp({
+    super.key,
+    required this.isLoading,
+    required this.child,
+    this.noWhite,
+  });
+
+  final bool isLoading;
+  final Widget? child;
+  final bool? noWhite;
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: isLoading,
+      child: Material(
+        color: Colors.black.withAlpha(150),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: noWhite != null ? null : Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
 }

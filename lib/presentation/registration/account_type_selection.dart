@@ -36,9 +36,10 @@ class AccountTypeSelectionPage extends ConsumerWidget {
                   maxLines: 2,
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const Gap(50),
                 Card(

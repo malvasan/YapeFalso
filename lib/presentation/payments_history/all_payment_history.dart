@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/domain/transfer.dart';
 import 'package:yapefalso/presentation/payments_history/all_transfers_controller.dart';
+import 'package:yapefalso/presentation/payments_history/widgets/payment_card.dart';
 import 'package:yapefalso/utils.dart';
 
 @RoutePage()
@@ -62,8 +62,9 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                         message: Text(
                           'Selecciona un filtro',
                           style: TextStyle(
-                              color: Theme.of(context).disabledColor,
-                              fontWeight: FontWeight.w400),
+                            color: Theme.of(context).disabledColor,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                         actions: [
                           CupertinoActionSheetAction(
@@ -76,7 +77,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                               'Solo hoy',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xFF2073E8),
+                                color: cupertinoColor,
                               ),
                             ),
                           ),
@@ -90,7 +91,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                               'Últimos 7 días',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xFF2073E8),
+                                color: cupertinoColor,
                               ),
                             ),
                           ),
@@ -104,7 +105,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                               'Últimos 15 días',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xFF2073E8),
+                                color: cupertinoColor,
                               ),
                             ),
                           ),
@@ -118,7 +119,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                               'Últimos 30 días',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xFF2073E8),
+                                color: cupertinoColor,
                               ),
                             ),
                           ),
@@ -132,7 +133,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                               'Últimos 90 días',
                               style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xFF2073E8),
+                                color: cupertinoColor,
                               ),
                             ),
                           ),
@@ -144,7 +145,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                             'Cancelar',
                             style: TextStyle(
                                 fontSize: 20,
-                                color: Color(0xFF2073E8),
+                                color: cupertinoColor,
                                 fontWeight: FontWeight.w500),
                           ),
                         ),
@@ -375,53 +376,5 @@ class CustomSliverCard extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return true;
-  }
-}
-
-class PaymentHistoryCard extends ConsumerWidget {
-  const PaymentHistoryCard({super.key, required this.transfer});
-
-  final Transfer transfer;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(
-            transfer.name,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          subtitle: Text(
-            convertToYapeFormat(transfer.createdAt),
-            style: TextStyle(color: Theme.of(context).disabledColor),
-          ),
-          trailing: transfer.isPositive
-              ? Text(
-                  'S/ ${transfer.amount.toStringAsPrecision(2)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                  ),
-                )
-              : Text(
-                  '- S/ ${transfer.amount.toStringAsPrecision(2)}',
-                  style: const TextStyle(
-                    color: Color(0xFFD3526E),
-                    fontSize: 18,
-                  ),
-                ),
-          onTap: () => ref.read(autorouteProvider).push(
-                ConfirmationRoute(
-                  yapeo: false,
-                  transferData: transfer,
-                ),
-              ),
-        ),
-        const Divider(
-          indent: 10,
-          endIndent: 10,
-        ),
-      ],
-    );
   }
 }

@@ -1,16 +1,16 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
+import 'package:yapefalso/utils.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   const supabaseUrl = 'https://dwcurxogbbsqjuagfuch.supabase.co';
-  //const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey:
@@ -29,15 +29,14 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(autorouteProvider);
-    final supabase = Supabase.instance.client;
 
     return MaterialApp.router(
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF742284),
+          seedColor: mainColor,
         ),
-        primaryColor: const Color(0xFF742284),
+        primaryColor: mainColor,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.black,
@@ -48,10 +47,7 @@ class MainApp extends ConsumerWidget {
           ),
         ),
       ),
-      routerConfig: appRouter.config(
-          // reevaluateListenable:
-          //     ReevaluateListenable.stream(supabase.auth.onAuthStateChange),
-          ),
+      routerConfig: appRouter.config(),
     );
   }
 }

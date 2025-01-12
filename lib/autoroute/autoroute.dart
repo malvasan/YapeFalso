@@ -48,22 +48,7 @@ class AppRouter extends RootStackRouter {
       ];
 
   @override
-  List<AutoRouteGuard> get guards => [
-        // AutoRouteGuard.simple(
-        //   (resolver, router) {
-        //     final data = ref.watch(authenticationStateProvider);
-
-        //     if (data ||
-        //         resolver.routeName == FirstRoute.name ||
-        //         resolver.routeName == LoginEmailRoute.name ||
-        //         resolver.routeName == LoginPasswordRoute.name) {
-        //       resolver.next();
-        //     } else {
-        //       resolver.redirect(FirstRoute());
-        //     }
-        //   },
-        // )
-      ];
+  List<AutoRouteGuard> get guards => [];
 }
 
 class AuthGuard extends AutoRouteGuard {

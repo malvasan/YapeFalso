@@ -7,6 +7,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class ContactSearchPage extends ConsumerWidget {
@@ -87,7 +88,7 @@ class _ContactsListState extends State<ContactsList> {
       return const Center(
         child: CupertinoActivityIndicator(
           radius: 15,
-          color: Color(0xFF4A1972),
+          color: mainColorDarker,
         ),
       );
     }

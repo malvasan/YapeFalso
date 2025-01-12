@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 import 'package:yapefalso/data/messaging.dart';
-import 'package:yapefalso/presentation/first_page/session_controller.dart';
 import 'package:yapefalso/presentation/login/login_password_controller.dart';
 import 'package:yapefalso/presentation/login/sign_in_controller.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:yapefalso/utils.dart';
 
 @RoutePage()
 class LoginPasswordPage extends ConsumerStatefulWidget {
@@ -44,26 +42,6 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
   Widget build(BuildContext context) {
     final messaging = ref.read(messagingProvider);
     final auth = ref.read(authenticationProvider);
-    //TODO: HERE 1 log out
-    // ref.listen(
-    //   authenticationStateProvider,
-    //   (_, state) => state.whenOrNull(
-    //     data: (data) async {
-    //       final event = data.event;
-
-    //       if (event == AuthChangeEvent.signedIn) {
-    //         final fcmToken = await messaging.getToken();
-
-    //         if (fcmToken != null) {
-    //           await auth.setFcmToken(fcmToken);
-    //         }
-    //         if (context.mounted) {
-    //           ref.read(autorouteProvider).push(const PaymentsRoute());
-    //         }
-    //       }
-    //     },
-    //   ),
-    // );
 
     messaging.firebaseMessaging.onTokenRefresh.listen(
       (fcmToken) async {
@@ -77,7 +55,7 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
 
     return Stack(children: [
       Scaffold(
-        backgroundColor: const Color(0xFF4A1972),
+        backgroundColor: mainColorDarker,
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
@@ -100,7 +78,7 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
                     stops: const [0.25, 1.0],
                     colors: [
                       Theme.of(context).primaryColor,
-                      const Color(0xFF4A1972),
+                      mainColorDarker,
                     ],
                   ),
                 ),
@@ -120,96 +98,72 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
           ],
         ),
       ),
-      Visibility(
-        visible: isLoading,
-        child: Material(
-          color: Colors.black.withAlpha(150),
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Gap(10),
-                  CupertinoActivityIndicator(
-                    radius: 15,
-                    color: Color(0xFF4A1972),
-                  ),
-                  Gap(10),
-                  Text('Validando datos'),
-                ],
-              ),
+      NotificationPopUp(
+        isLoading: isLoading,
+        child: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Gap(10),
+            CupertinoActivityIndicator(
+              radius: 15,
+              color: mainColorDarker,
             ),
-          ),
+            Gap(10),
+            Text('Validando datos'),
+          ],
         ),
       ),
-      Visibility(
-        visible: isError,
-        child: Material(
-          color: Colors.black.withAlpha(150),
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Gap(10),
-                  const Text(
-                    'Clave Incorrecta',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                    ),
-                  ),
-                  const Gap(5),
-                  const Text(
-                    'Después de 3 intentos incorrectos el\nacceso se bloqueará. En caso no\nrecuerdes tu clave, cámbiala.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                  const Gap(10),
-                  TextButton(
-                    onPressed: () {
-                      ref.read(passwordProvider).clear();
-                      ref.invalidate(signInProvider);
-                    },
-                    child: const Text(
-                      'Intentar de nuevo',
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Color(0xFF2073E8),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  const Gap(10),
-                  TextButton(
-                    onPressed: () {
-                      ref.invalidate(signInProvider);
-                    },
-                    child: const Text(
-                      'Cambiar clave',
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Color(0xFF2073E8),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ],
+      NotificationPopUp(
+        isLoading: isError,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Gap(10),
+            const Text(
+              'Clave Incorrecta',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
               ),
             ),
-          ),
+            const Gap(5),
+            const Text(
+              'Después de 3 intentos incorrectos el\nacceso se bloqueará. En caso no\nrecuerdes tu clave, cámbiala.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
+            const Gap(10),
+            TextButton(
+              onPressed: () {
+                ref.read(passwordProvider).clear();
+                ref.invalidate(signInProvider);
+              },
+              child: const Text(
+                'Intentar de nuevo',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: cupertinoColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            const Gap(10),
+            TextButton(
+              onPressed: () {
+                ref.invalidate(signInProvider);
+              },
+              child: const Text(
+                'Cambiar clave',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: cupertinoColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     ]);
@@ -312,7 +266,6 @@ class HiddenPassword extends ConsumerWidget {
   }
 }
 
-//TODO: can be sorted like the real app
 class NumericPad extends ConsumerWidget {
   const NumericPad({super.key, required this.email, required this.numbers});
 
@@ -339,8 +292,11 @@ class NumericPad extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                  child: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.fingerprint))),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.fingerprint),
+                ),
+              ),
               NumberButton(
                 value: numbers[9],
                 email: email,
@@ -363,7 +319,7 @@ class NumericPad extends ConsumerWidget {
         const Text(
           'Olvidaste tu clave?',
           style: TextStyle(
-            color: Color.fromARGB(255, 16, 203, 180),
+            color: contrastColor,
             fontSize: 18,
           ),
         ),

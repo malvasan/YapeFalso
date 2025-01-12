@@ -3,14 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:yapefalso/autoroute/autoroute.gr.dart';
-import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 import 'package:yapefalso/data/messaging.dart';
-import 'package:yapefalso/presentation/first_page/session_controller.dart';
+
 import 'package:yapefalso/presentation/registration/sign_up_controller.dart';
 import 'package:yapefalso/presentation/registration/user_registration_data_controller.dart';
+import 'package:yapefalso/utils.dart';
 
 List<String> _months = [
   '01',
@@ -68,28 +66,6 @@ class _DebitCardRegistrtationState
     final auth = ref.read(authenticationProvider);
     final isLoading = ref.watch(signUpProvider).isLoading;
 
-    //TODO: HERE 1 log in
-    // ref.listen(
-    //   authenticationStateProvider,
-    //   (_, state) => state.whenData(
-    //     (data) async {
-    //       final event = data.event;
-    //       if (event == AuthChangeEvent.signedIn) {
-    //         final fcmToken = await messaging.getToken();
-
-    //         if (fcmToken != null) {
-    //           await auth.setFcmToken(fcmToken);
-    //         }
-    //         if (context.mounted) {
-    //           ref
-    //               .read(autorouteProvider)
-    //               .push(const RegistrationConfirmationRoute());
-    //         }
-    //       }
-    //     },
-    //   ),
-    // );
-
     messaging.firebaseMessaging.onTokenRefresh.listen(
       (fcmToken) async {
         await auth.setFcmToken(fcmToken);
@@ -125,17 +101,19 @@ class _DebitCardRegistrtationState
                       'Registra tu tarjeta BCP',
                       maxLines: 2,
                       style: TextStyle(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       'Conecta tu cuenta de ahorros o corriente en soles\n para hacer transferencias en Yape.',
                       maxLines: 2,
                       style: TextStyle(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const Gap(50),
                     Card(
@@ -211,7 +189,6 @@ class _DebitCardRegistrtationState
                                       return null;
                                     },
                                     onChanged: (value) {
-                                      // This is called when the user selects an item.
                                       dropdownMonth = value!;
                                       if (_formKey.currentState!.validate()) {
                                         ref
@@ -251,8 +228,6 @@ class _DebitCardRegistrtationState
                                                 .notifier)
                                             .updateAccountNumber(cardID.text);
                                         signUp(ref);
-                                        // context.router.push(
-                                        //     const RegistrationConfirmationRoute());
                                       }
                                       setState(() {});
                                     },
@@ -271,31 +246,19 @@ class _DebitCardRegistrtationState
           ),
         ),
       ),
-      Visibility(
-        visible: isLoading,
-        child: Material(
-          color: Colors.black.withAlpha(150),
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Gap(10),
-                  CupertinoActivityIndicator(
-                    radius: 15,
-                    color: Color(0xFF4A1972),
-                  ),
-                  Gap(10),
-                  Text('Validando datos'),
-                ],
-              ),
+      NotificationPopUp(
+        isLoading: isLoading,
+        child: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Gap(10),
+            CupertinoActivityIndicator(
+              radius: 15,
+              color: mainColorDarker,
             ),
-          ),
+            Gap(10),
+            Text('Validando datos'),
+          ],
         ),
       ),
     ]);
