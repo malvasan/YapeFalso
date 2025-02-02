@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 import 'package:yapefalso/data/messaging.dart';
+import 'package:yapefalso/presentation/appStartup/app_startup_controller.dart';
 import 'package:yapefalso/presentation/login/login_password_controller.dart';
 import 'package:yapefalso/presentation/login/sign_in_controller.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -23,19 +23,9 @@ class LoginPasswordPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
-  String qr = '';
-
   @override
   void initState() {
     super.initState();
-    _loadQR();
-  }
-
-  Future<void> _loadQR() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      qr = prefs.getString('qr') ?? '';
-    });
   }
 
   @override
@@ -52,6 +42,9 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
     final signInProviderState = ref.watch(signInProvider);
     final isLoading = signInProviderState.isLoading;
     final isError = signInProviderState is AsyncError<void>;
+    final prefs = ref.watch(sharedPreferencesProvider).requireValue;
+
+    var qr = prefs.getString('qr') ?? '';
 
     return Stack(children: [
       Scaffold(
@@ -84,8 +77,15 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
                 ),
                 child: Center(
                   child: qr.isEmpty
-                      ? Text('QR')
-                      : Card(child: QrImageView(data: qr)),
+                      ? Icon(
+                          Icons.lock_person_sharp,
+                          size: 80,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Card(child: QrImageView(data: qr)),
+                        ),
                 ),
               ),
             ),

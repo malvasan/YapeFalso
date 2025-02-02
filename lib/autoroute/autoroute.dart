@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:yapefalso/autoroute/autoroute.gr.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
+import 'package:yapefalso/presentation/appStartup/app_startup_controller.dart';
 
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
 
@@ -21,7 +22,9 @@ class AppRouter extends RootStackRouter {
         // HomeScreen is generated as HomeRoute because
         // of the replaceInRouteName property
         AutoRoute(
-            page: FirstRoute.page, initial: true, guards: [SavedDataGuard()]),
+            page: FirstRoute.page,
+            initial: true,
+            guards: [SavedDataGuard(ref)]),
         AutoRoute(page: PhoneRegistrationRoute.page), //sign in
         AutoRoute(page: PersonalInformationRegistrationRoute.page), //sign in
         AutoRoute(page: PasswordRegistrationRoute.page), //sign in
@@ -69,9 +72,13 @@ class AuthGuard extends AutoRouteGuard {
 }
 
 class SavedDataGuard extends AutoRouteGuard {
+  final AutorouteRef ref;
+
+  SavedDataGuard(this.ref);
+
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = ref.watch(sharedPreferencesProvider).requireValue;
     final email = prefs.getString('email');
     if (email == null) {
       resolver.next();

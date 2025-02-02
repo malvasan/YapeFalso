@@ -31,6 +31,7 @@ class _PaymentsPageState extends ConsumerState<PaymentsPage> {
           saveUser(
             number: value.phoneNumber,
             email: value.email,
+            ref: ref,
           );
         },
       ),

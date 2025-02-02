@@ -2,11 +2,27 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yapefalso/domain/transfer.dart';
+import 'package:yapefalso/presentation/appStartup/app_startup_controller.dart';
 
 enum Months { en, feb, mar, abr, may, jun, jul, ag, set, oct, nov, dic }
+
+const monthsFullName = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+];
 
 const mainColor = Color(0xFF742284);
 const mainColorTransparent = Color(0xFF8C3D99);
@@ -91,8 +107,11 @@ List<List<Transfer>> separateTransfers(List<Transfer> data) {
   return separateList;
 }
 
-Future<bool> saveUser({required int number, required String email}) async {
-  final prefs = await SharedPreferences.getInstance();
+Future<bool> saveUser(
+    {required int number,
+    required String email,
+    required WidgetRef ref}) async {
+  final prefs = ref.watch(sharedPreferencesProvider).requireValue;
   await prefs.setString('email', email);
   return await prefs.setString('qr', number.toString());
 }

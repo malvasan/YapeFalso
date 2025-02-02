@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
+import 'package:yapefalso/presentation/appStartup/app_startup.dart';
 import 'package:yapefalso/utils.dart';
 import 'firebase_options.dart';
 
@@ -12,10 +13,9 @@ Future<void> main() async {
   const supabaseUrl = 'https://dwcurxogbbsqjuagfuch.supabase.co';
 
   await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3Y3VyeG9nYmJzcWp1YWdmdWNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzEwODU1NTIsImV4cCI6MjA0NjY2MTU1Mn0.OE9ywfv_vuQynhj42gQN0BaUiqJ5LXacDh3GcWZIwG0',
-  );
+      url: supabaseUrl,
+      anonKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3Y3VyeG9nYmJzcWp1YWdmdWNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzEwODU1NTIsImV4cCI6MjA0NjY2MTU1Mn0.OE9ywfv_vuQynhj42gQN0BaUiqJ5LXacDh3GcWZIwG0');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -48,6 +48,11 @@ class MainApp extends ConsumerWidget {
         ),
       ),
       routerConfig: appRouter.config(),
+      builder: (context, child) {
+        return AppStartupWidget(
+          onLoaded: (context) => child!,
+        );
+      },
     );
   }
 }

@@ -6,7 +6,7 @@ part of 'password_registration_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$passwordCreationHash() => r'ab7be92db1d0cd57691635436fc0d79babc2d03a';
+String _$passwordCreationHash() => r'db03b3b77f59a7be7ba6b80cf3c5c9fd839e73f4';
 
 /// See also [PasswordCreation].
 @ProviderFor(PasswordCreation)

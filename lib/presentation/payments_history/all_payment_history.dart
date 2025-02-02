@@ -176,7 +176,7 @@ class _AllPaymentHistoryPageState extends ConsumerState<AllPaymentHistoryPage> {
                                     const EdgeInsets.fromLTRB(15, 10, 15, 10),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  Months.values[e[0].createdAt.month - 1].name,
+                                  monthsFullName[e[0].createdAt.month - 1],
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.w500,
