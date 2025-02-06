@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:yapefalso/data/messaging.dart';
 import 'package:yapefalso/domain/user_metadata.dart';
 import 'package:yapefalso/presentation/first_page/session_controller.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 part 'auth.g.dart';
 
@@ -26,6 +27,10 @@ class Auth {
       );
       ref.read(authenticationStateProvider.notifier).isLoggedIn();
 
+      final storage = FlutterSecureStorage();
+      await storage.write(key: 'password', value: password);
+      await storage.write(key: 'passwordSaved', value: 'true');
+
       final messaging = ref.read(messagingProvider);
       final fcmToken = await messaging.getToken();
       if (fcmToken != null) {
@@ -46,6 +51,11 @@ class Auth {
         password: password,
       );
       ref.read(authenticationStateProvider.notifier).isLoggedIn();
+
+      final storage = FlutterSecureStorage();
+
+      await storage.write(key: 'password', value: password);
+      await storage.write(key: 'passwordSaved', value: 'true');
 
       final messaging = ref.read(messagingProvider);
       final fcmToken = await messaging.getToken();

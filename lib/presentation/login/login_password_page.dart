@@ -3,14 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:yapefalso/autoroute/autoroute_provider.dart';
 import 'package:yapefalso/data/auth.dart';
 import 'package:yapefalso/data/messaging.dart';
 import 'package:yapefalso/presentation/appStartup/app_startup_controller.dart';
+import 'package:yapefalso/presentation/login/biometric_controller.dart';
 import 'package:yapefalso/presentation/login/login_password_controller.dart';
 import 'package:yapefalso/presentation/login/sign_in_controller.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:yapefalso/utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 @RoutePage()
 class LoginPasswordPage extends ConsumerStatefulWidget {
@@ -23,9 +26,27 @@ class LoginPasswordPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  bool passwordSaved = false;
+  bool runningBiometric = false;
+  List<BiometricType> availableBiometrics = <BiometricType>[];
+
   @override
   void initState() {
     super.initState();
+    _readAll();
+  }
+
+  Future<void> _readAll() async {
+    String? value = await _storage.read(key: 'passwordSaved');
+    if (value != null) {
+      setState(() {
+        passwordSaved = true;
+      });
+      final LocalAuthentication auth = LocalAuthentication();
+      availableBiometrics = await auth.getAvailableBiometrics();
+      ref.read(biometricProvider.notifier).startAuth();
+    }
   }
 
   @override
@@ -43,8 +64,13 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
     final isLoading = signInProviderState.isLoading;
     final isError = signInProviderState is AsyncError<void>;
     final prefs = ref.watch(sharedPreferencesProvider).requireValue;
+    final biometricCalled = ref.watch(biometricProvider);
 
-    var qr = prefs.getString('qr') ?? '';
+    final qr = prefs.getString('qr') ?? '';
+
+    if (biometricCalled) {
+      _authenticate(context, ref);
+    }
 
     return Stack(children: [
       Scaffold(
@@ -166,7 +192,78 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
           ],
         ),
       ),
+      NotificationPopUp(
+        isLoading: availableBiometrics.isNotEmpty &&
+            (biometricCalled && (passwordSaved && (!isLoading && !isError))),
+        noWhite: true,
+        child: BiometricPassword(email: widget.email),
+      ),
     ]);
+  }
+
+  Future<void> _authenticate(BuildContext context, WidgetRef ref) async {
+    if (runningBiometric) {
+      return;
+    }
+    runningBiometric = true;
+    //ref.read(biometricProvider.notifier).cancelAuth();
+    final LocalAuthentication auth = LocalAuthentication();
+    final storage = FlutterSecureStorage();
+    bool authenticated = await auth.authenticate(
+      localizedReason: 'Let OS determine authentication method',
+      options: const AuthenticationOptions(
+        stickyAuth: true,
+        biometricOnly: true,
+      ),
+    );
+    if (authenticated) {
+      String? password = await storage.read(key: 'password');
+
+      if (password != null) {
+        ref
+            .read(signInProvider.notifier)
+            .signIn(email: widget.email, password: password);
+      }
+    } else {
+      runningBiometric = false;
+      //ref.read(biometricProvider.notifier).startAuth();
+    }
+  }
+}
+
+class BiometricPassword extends ConsumerWidget {
+  const BiometricPassword({required this.email, super.key});
+  final String email;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [
+          Icon(
+            Icons.fingerprint_rounded,
+            color: Colors.red,
+          ),
+          const Text('Touch ID for "Yape"'),
+        ],
+      ),
+      content: Text(
+        'Coloca tu dedo en el sensor de tu\ncelular y accede automáticamente a\nYape',
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          onPressed: () {
+            ref.read(biometricProvider.notifier).cancelAuth();
+          },
+          child: const Text(
+            'Ingresar clave',
+            style: TextStyle(color: cupertinoColor),
+          ),
+        )
+      ],
+    );
   }
 }
 
@@ -273,6 +370,9 @@ class NumericPad extends ConsumerWidget {
   final String email;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final FlutterSecureStorage storage = const FlutterSecureStorage();
+    final LocalAuthentication auth = LocalAuthentication();
+
     return Column(
       children: [
         RowNumber(
@@ -293,7 +393,15 @@ class NumericPad extends ConsumerWidget {
             children: [
               Expanded(
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    String? value = await storage.read(key: 'passwordSaved');
+                    final availableBiometrics =
+                        await auth.getAvailableBiometrics();
+                    if (value == null || availableBiometrics.isEmpty) {
+                      return;
+                    }
+                    ref.read(biometricProvider.notifier).startAuth();
+                  },
                   icon: const Icon(Icons.fingerprint),
                 ),
               ),
