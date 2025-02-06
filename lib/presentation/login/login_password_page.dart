@@ -30,20 +30,20 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
   bool passwordSaved = false;
   bool runningBiometric = false;
   List<BiometricType> availableBiometrics = <BiometricType>[];
+  final LocalAuthentication auth = LocalAuthentication();
 
   @override
   void initState() {
     super.initState();
-    _readAll();
+    _setBiometricAvailability();
   }
 
-  Future<void> _readAll() async {
+  Future<void> _setBiometricAvailability() async {
     String? value = await _storage.read(key: 'passwordSaved');
     if (value != null) {
       setState(() {
         passwordSaved = true;
       });
-      final LocalAuthentication auth = LocalAuthentication();
       availableBiometrics = await auth.getAvailableBiometrics();
       ref.read(biometricProvider.notifier).startAuth();
     }
@@ -193,6 +193,10 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
         ),
       ),
       NotificationPopUp(
+        //availableBiometrics tell us if there is valid method enrolled in the device
+        //biometricCalled help us to controll when the dialog is closed or open, and refresh the main widget
+        //passwordSaved if the user alredy login and
+        //isLoading/isError to close the dialog when the authentication in the supabase is running
         isLoading: availableBiometrics.isNotEmpty &&
             (biometricCalled && (passwordSaved && (!isLoading && !isError))),
         noWhite: true,
@@ -202,11 +206,11 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
   }
 
   Future<void> _authenticate(BuildContext context, WidgetRef ref) async {
+    //runningBiometric for not calling multiple times
     if (runningBiometric) {
       return;
     }
     runningBiometric = true;
-    //ref.read(biometricProvider.notifier).cancelAuth();
     final LocalAuthentication auth = LocalAuthentication();
     final storage = FlutterSecureStorage();
     bool authenticated = await auth.authenticate(
@@ -226,7 +230,6 @@ class _LoginPasswordPageState extends ConsumerState<LoginPasswordPage> {
       }
     } else {
       runningBiometric = false;
-      //ref.read(biometricProvider.notifier).startAuth();
     }
   }
 }

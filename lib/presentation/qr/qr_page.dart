@@ -209,7 +209,9 @@ class _CameraPageState extends ConsumerState<CameraPage> {
       if (barcode.format != BarcodeFormat.qrCode) continue;
 
       final String? rawValue = barcode.rawValue;
+      //_isValidQR to stop proccesing QR when there is already a valid one
       if (_isValidQR) continue;
+      //verify that is inside the box in the middle
       if (inputImage.metadata?.size != null &&
           inputImage.metadata?.rotation != null) {
         if (!mounted) {
@@ -243,6 +245,7 @@ class _CameraPageState extends ConsumerState<CameraPage> {
       return;
     }
 
+    //temp help us when we return from the payment and we want to continue scanning
     var temp = await ref.read(autorouteProvider).push<bool>(PaymentRoute(
           phone: int.parse(phone.replaceAll('YP-', '')),
         ));
@@ -252,6 +255,8 @@ class _CameraPageState extends ConsumerState<CameraPage> {
     }
   }
 
+  //this function calculate the points of the box in the middle taking in count the size of the device
+  //after that evaluate if the QR is inside the box
   bool verifyQRBox(
       {required Barcode barcode,
       required Size size,
@@ -308,6 +313,7 @@ class _CameraPageState extends ConsumerState<CameraPage> {
     return false;
   }
 
+  //transformation needed from the streaming to verify is there is a QR
   InputImage? _inputImageFromCameraImage(CameraImage image) {
     // get image rotation
     // it is used in android to convert the InputImage from Dart to Java
@@ -363,6 +369,9 @@ class _CameraPageState extends ConsumerState<CameraPage> {
     );
   }
 
+  //this function trigger when the user upload an image from the gallery
+  //the main diffrence is that we should verify that the image is not to large to be proccesed
+  //after that is the same as the used in the live camera without the necessity to be inside the box
   Future _getImage(ImageSource source) async {
     _imagePicker = ImagePicker();
     final pickedFile = await _imagePicker!
@@ -380,15 +389,9 @@ class _CameraPageState extends ConsumerState<CameraPage> {
       final barcodeScanner = BarcodeScanner();
       final barcodes = await barcodeScanner.processImage(inputImage);
 
-      //vission detector view
-      //barcode scanner, camera view
-
       for (Barcode barcode in barcodes) {
         if (barcode.format != BarcodeFormat.qrCode) continue;
 
-        // final BarcodeType type = barcode.type;
-        // final Rect boundingBox = barcode.boundingBox;
-        // final String? displayValue = barcode.displayValue;
         final String? rawValue = barcode.rawValue;
 
         final validFormat = RegExp(r'^(YP-)\d{9}');
